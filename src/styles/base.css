@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #F4C134;
+}
+
+
+@layer components {
+    .border-solid-grey {
+        @apply rounded-lg border-solid border-2 border-[#2A2C30];
+    }
+
+}

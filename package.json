@@ -1,0 +1,38 @@
+{
+  "name": "wallet",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@reown/appkit": "^1.6.8",
+    "@reown/appkit-adapter-ethers": "^1.6.8",
+    "@reown/appkit-core": "^1.6.8",
+    "@reown/walletkit": "^1.2.0",
+    "@walletconnect/core": "^2.18.0",
+    "@walletconnect/utils": "^2.18.0",
+    "@walletconnect/web3wallet": "^1.16.1",
+    "ethers": "^6.13.5",
+    "i18next": "^24.2.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.6",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.20",
+    "globals": "^15.14.0",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^4.0.6",
+    "unplugin-auto-import": "^19.1.0",
+    "vite": "^6.1.0"
+  }
+}
