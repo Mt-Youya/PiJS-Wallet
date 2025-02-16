@@ -18,7 +18,7 @@ function Header() {
 
     const [loading, setLoading] = useState(false)
     const { open, close } = useAppKit()
-    const { isConnected, allAccounts, address } = useAppKitAccount()
+    const { isConnected, allAccounts } = useAppKitAccount()
 
     async function handleConnect() {
         if (isConnected) return
@@ -61,9 +61,9 @@ function Header() {
                         <li className="relative" onClick={() => setSwitchLanguage(prevState => !prevState)}>
                             <img className="w-5 h-5 aspect-square" src="/assets/Language.svg" alt="Language" /> 语言
                             <img
-                                className="w-5 h-5 aspect-square block ml-auto" src="/assets/Dropdown.svg"
+                                className={`w-5 h-5 aspect-square block ml-auto transition-all ${switchLanguage ? "rotate-180" : "rotate-0"}`}
+                                src="/assets/Dropdown.svg"
                                 alt="Dropdown" />
-
                         </li>
                         <div className="ml-9" style={{ padding: 0 }}>
                             <ol className={`${!switchLanguage ? "hidden" : "block"} *:py-2`}>

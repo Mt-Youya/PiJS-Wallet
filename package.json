@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --open --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "pnpm build && vite preview --open --host"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
