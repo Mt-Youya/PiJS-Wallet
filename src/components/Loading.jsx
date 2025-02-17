@@ -1,8 +1,6 @@
 function Loading() {
     return (
-        <div className="border-solid-grey mx-auto">
-            <img src="/assets/Logo.svg" alt="loading..."/>
-        </div>
+            <img className="block mx-auto animate-spin my-2"  src="/assets/Loading.svg" alt="loading..."/>
     )
 }
 

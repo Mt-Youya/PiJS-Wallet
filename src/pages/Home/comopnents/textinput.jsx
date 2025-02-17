@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { Button, Dialog, DialogPanel, Textarea } from "@headlessui/react"
 import Loading from "@/components/Loading.jsx"
+import { useTranslation } from "react-i18next"
 
 function TextInput() {
+    const { t } = useTranslation()
     const [isPaid, setIsPaid] = useState(false)
 
     const [open, setOpen] = useState(false)
@@ -15,7 +17,7 @@ function TextInput() {
 
     return (
         <>
-            <h2 className="text-white text-xl my-4 block">PIJSwap 全球私募</h2>
+            <h2 className="text-white text-xl my-4 block">{t("PIJSwap 全球私募")}</h2>
             <div className="p-4 my-4 border-solid-grey">
                 <Textarea
                     className="border data-[hover]:shadow data-[focus]:bg-blue-100 block w-full h-32 bg-[#2A2A2A] rounded-lg" />
@@ -24,7 +26,7 @@ function TextInput() {
                 !isPaid ?
                     <Button className="bg-primary p-3 rounded-xl w-[calc(100%-2rem)] m-auto block"
                             onClick={handlePay}>
-                        支付 100 USDT 参与私募
+                        {t("支付 100 USDT参与私募")}
                     </Button>
                     : (
                         <Button className="bg-[#5D6167] p-3 rounded-xl w-[calc(100%-2rem)] m-auto block" disabled>
@@ -39,11 +41,11 @@ function TextInput() {
                     <div className="flex min-h-full items-center justify-center p-4 text-white">
                         <DialogPanel
                             transition
-                            className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                            className="w-full max-w-md text-center  rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
                         >
                             {loading && <Loading />}
-                            <span>批准 100 USDT 参与私募</span>
-                            <span>支付 100 USDT 参与私募</span>
+                            <span>{t("批准100USDT参与私募")}</span> <br/>
+                            <span>{t("支付100USDT参与私募")}</span>
                             {!loading && (
                                 <div className="mt-4">
                                     <Button

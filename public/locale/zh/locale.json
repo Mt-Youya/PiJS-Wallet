@@ -1,0 +1,22 @@
+{
+  "Connect Wallet": "连接钱包",
+  "Please use the Chrome browser and ensure that you have installed plugin wallets such as OKX and MetaMask. Mobile users, please copy the link and open it in the OKX or TP wallet app.": "请使用Chrome浏览器并确保已安装OKX、MetaMask等插件钱包。手机用户请将链接复制到OKX或TP钱包APP中打开。",
+  "My JS": "我的JS",
+  "PIJSwap Account Binding": "PIJSwap账号绑定",
+  "Coming Soon": "即将开放 ",
+  "My PIJS": "我的PIJS",
+  "Bind PIJSwap Account\nUse JS in the account to exchange for PIJS": "绑定PIJSwap账号\n使用账号内JS兑换PIJS",
+  "Deadline": "兑换截止时间",
+  "PIJSwap Global Private Sale": "PIJSwap 全球私募",
+  "Pay 100 USDT to participate": "支付100USDT参与私募",
+  "Sold": "已售卖",
+  "82 Unsold": "82 未售出",
+  "Total": "总份数",
+  "PIJS Equity Card Description:": "PIJS 权益卡说明：",
+  "Whitelist: Purchase tokens 5 minutes in advance\nFirst Mining Reward: 1-3 days\nDiscount Points: Exchange tokens\n1% Transaction Fee: Distributed\nPriority Access: Future ecosystem projects\nLP Staking Withdrawal: Cancels the above rights": " 白名单：提前5分钟购买代币\n 首次挖矿奖励：1-3天\n 折扣点：兑换代币\n 1％交易费：分布式\n 优先访问：未来生态系统项目\n LP质押提现：取消上述权利",
+  "Home": "首页",
+  "Language": "语言",
+  "Disconnect": "断开链接",
+  "Approve 100 USDT to participate": "批准100USDT参与私募",
+  "Payment completed": "支付完成，您已完成私募"
+}

@@ -57,9 +57,9 @@ function Header() {
                     </button>
                     <p className="w-[calc(100%+10rem)] bg-[#2A2C30] h-1 -ml-10 my-4" />
                     <ul className="*:flex *:gap-4 *:py-2">
-                        <li><img className="w-5 h-5 aspect-square" src="/assets/Home.svg" alt="Home" /> 首页</li>
+                        <li><img className="w-5 h-5 aspect-square" src="/assets/Home.svg" alt="Home" /> {t("首页")}</li>
                         <li className="relative" onClick={() => setSwitchLanguage(prevState => !prevState)}>
-                            <img className="w-5 h-5 aspect-square" src="/assets/Language.svg" alt="Language" /> 语言
+                            <img className="w-5 h-5 aspect-square" src="/assets/Language.svg" alt="Language" /> {t("语言")}
                             <img
                                 className={`w-5 h-5 aspect-square block ml-auto transition-all ${switchLanguage ? "rotate-180" : "rotate-0"}`}
                                 src="/assets/Dropdown.svg"
@@ -72,7 +72,7 @@ function Header() {
                             </ol>
                         </div>
                         <li onClick={handleExit}>
-                            <img className="w-5 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" /> 断开连接
+                            <img className="w-5 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" /> {t("断开连接")}
                         </li>
                     </ul>
                 </div>

@@ -8,23 +8,26 @@ import Rights from "./comopnents/rights.jsx"
 import Binding from "../../components/Binding.jsx"
 import Exchange from "../../components/Exchange.jsx"
 import AccountsProvider from "../../contexts/accounts.jsx"
+import { useTranslation } from "react-i18next"
 
 function Home() {
 
     const [bindingOpen, setBindingOpen] = useState(false)
     const [exchangeOpen, setExchangeOpen] = useState(false)
+    const { t } = useTranslation()
+
     return (
         <>
             <Header />
             <Bar />
-            <Card title="我的JS" dollar={"1,000,000"} description="PIJSwap账号绑定"
+            <Card title={t("我的JS")} dollar={"1,000,000"} description={t("PIJSwap账号绑定")}
                   onClick={() => setBindingOpen(false)} />
-            <Card title="我的PiJS" dollar={"1,000,000"}
-                  description={<span>绑定PIJSwap账号<br />使用账号内JS兑换PiJS</span>}
+            <Card title={t("我的PIJS")} dollar={"1,000,000"}
+                  description={<span>{t("绑定PIJSwap账号")}<br />{t("使用账号内JS兑换PIJS")}</span>}
                   onClick={() => setExchangeOpen(false)}
                   footer={<div className="text-right pt-2">
                       <p className="h-px w-[calc(100%+24px)] -ml-3 bg-[#2A2C30] mb-1" />
-                      <span className="text-[#5D6167]">兑换截至时间</span> &nbsp; <span>2025-3-1 23:59:59</span>
+                      <span className="text-[#5D6167]">{t("兑换截止时间")}</span> &nbsp; <span>2025-3-1 23:59:59</span>
                   </div>}
             />
             <AccountsProvider>
