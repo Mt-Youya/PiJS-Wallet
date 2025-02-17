@@ -1,8 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@headlessui/react"
-import { useAppKit } from "@reown/appkit/react"
-import { useAppKitAccount } from "@reown/appkit-core/react"
+import { useAppKit, useAppKitAccount, useDisconnect } from "@reown/appkit/react"
 
 function Header() {
     const { t, i18n } = useTranslation()
@@ -17,8 +16,9 @@ function Header() {
     }
 
     const [loading, setLoading] = useState(false)
-    const { open, close } = useAppKit()
+    const { open } = useAppKit()
     const { isConnected, allAccounts } = useAppKitAccount()
+    const { disconnect } = useDisconnect()
 
     async function handleConnect() {
         if (isConnected) return
@@ -30,7 +30,7 @@ function Header() {
     async function handleExit() {
         if (!isConnected) return
         setLoading(true)
-        await close().catch(e => console.log(e))
+        await disconnect()
         setLoading(false)
     }
 
@@ -59,7 +59,8 @@ function Header() {
                     <ul className="*:flex *:gap-4 *:py-2">
                         <li><img className="w-5 h-5 aspect-square" src="/assets/Home.svg" alt="Home" /> {t("首页")}</li>
                         <li className="relative" onClick={() => setSwitchLanguage(prevState => !prevState)}>
-                            <img className="w-5 h-5 aspect-square" src="/assets/Language.svg" alt="Language" /> {t("语言")}
+                            <img className="w-5 h-5 aspect-square" src="/assets/Language.svg"
+                                 alt="Language" /> {t("语言")}
                             <img
                                 className={`w-5 h-5 aspect-square block ml-auto transition-all ${switchLanguage ? "rotate-180" : "rotate-0"}`}
                                 src="/assets/Dropdown.svg"
