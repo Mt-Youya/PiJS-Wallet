@@ -1,9 +1,12 @@
-import Home from "./pages/Home/index.jsx";
-import "./contexts/wallet.jsx";
+import Home from "./pages/Home/index.jsx"
+import LanguageProvider from "./contexts/language.jsx"
+import "./contexts/wallet.jsx"
 
 function App() {
     return (
-        <Home/>
+        <LanguageProvider>
+            <Home />
+        </LanguageProvider>
     )
 }
 

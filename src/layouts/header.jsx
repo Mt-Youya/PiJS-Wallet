@@ -1,16 +1,19 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@headlessui/react"
 import { useAppKit, useAppKitAccount, useDisconnect } from "@reown/appkit/react"
+import { LanguageContext } from "../contexts/language.jsx"
 
 function Header() {
     const { t, i18n } = useTranslation()
+    const { setLang } = useContext(LanguageContext)
     const [expanded, setExpanded] = useState(false)
 
     const [switchLanguage, setSwitchLanguage] = useState(false)
 
     function handleSwitchLang(lang) {
         i18n.changeLanguage(lang)
+        setLang(lang)
         setExpanded(false)
         setSwitchLanguage(false)
     }

@@ -9,8 +9,7 @@
   "绑定PIJSwap账号": "Bind PIJSwap Account",
   "使用账号内JS兑换PIJS": "Use JS in the account to exchange for PIJS",
   "兑换截止时间": "Deadline",
-  "PIJSwap 全球私募": "PIJSwap Global Private Sale",
-  "支付 100 USDT参与私募": "Pay 100 USDT to participate",
+  "PIJSwap 全球节点合伙人": "PIJSwap Global Node Partner",
   "已售卖": "Sold",
   "未售出": "Unsold",
   "总份数": "Total",
@@ -24,7 +23,7 @@
   "首页": "Home",
   "语言": "Language",
   "断开连接": "Disconnect",
-  "批准100USDT参与私募": "Approve 100 USDT to participate",
-  "支付100USDT参与私募": "Pay 100 USDT to participate",
-  "支付完成，您已完成私募": "Payment completed"
+  "批准100USDT参与活动": "Approve 100 USDT to participate",
+  "支付100USDT参与私活动": "Pay 100 USDT to participate",
+  "支付完成": "Payment completed"
 }

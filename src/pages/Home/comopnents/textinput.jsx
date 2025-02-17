@@ -17,7 +17,7 @@ function TextInput() {
 
     return (
         <>
-            <h2 className="text-white text-xl my-4 block">{t("PIJSwap 全球私募")}</h2>
+            <h2 className="text-white text-xl my-4 block">{t("PIJSwap 全球节点合伙人")}</h2>
             <div className="p-4 my-4 border-solid-grey">
                 <Textarea
                     className="border data-[hover]:shadow data-[focus]:bg-blue-100 block w-full h-32 bg-[#2A2A2A] rounded-lg" />
