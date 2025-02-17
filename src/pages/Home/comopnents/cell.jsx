@@ -1,14 +1,26 @@
+import { useEffect, useMemo, useState } from "react"
+import { t } from "i18next"
+import { fundConfig } from "@/apis/auth.js"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
-import { useTranslation } from "react-i18next"
 
 function Cell() {
-    const sellRate = (123 / 3000 * 100).toFixed(2)
-    const { t } = useTranslation()
+    const [options, setOptions] = useState({ total: 0, used: 0, remain: 0 })
+
+    async function getOptions() {
+        const { data } = await fundConfig()
+        setOptions(data)
+    }
+
+    const sellRate = useMemo(() => (options?.used / options?.total * 100).toFixed(2), [options])
+
+    useEffect(() => {
+        getOptions()
+    }, [])
     return (
         <>
             <div className="rounded-xl bg-[#181A20] border-solid-grey text-white mt-4 mb-1">
                 <div className="p-3">
-                    <SplitNumberSquare number={3000} />
+                    <SplitNumberSquare number={options?.used} />
                     <span className="text-white text-right block mt-3">{t("已售卖")}</span>
                 </div>
                 <div className="rounded-full w-full h-2 bg-[#2A2C30] overflow-hidden">
@@ -17,8 +29,8 @@ function Cell() {
                 </div>
             </div>
             <div className="flex justify-between text-white *:text-[#ABB1B9]">
-                <span>{t("总份数")} 3000</span>
-                <span>82 {t("未售出")}</span>
+                <span>{t("总份数")} {options?.total}</span>
+                <span>{options?.remain} {t("未售出")}</span>
             </div>
         </>
     )

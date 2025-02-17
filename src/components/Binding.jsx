@@ -1,60 +1,87 @@
-import { Button, Description, Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label } from "@headlessui/react"
-import { clsx } from "clsx"
 import { AccountsContext } from "../contexts/accounts.jsx"
 import { useContext } from "react"
+import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog.jsx"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/ui/form.jsx"
+import { Input } from "@/ui/input.jsx"
+import { Button } from "@/ui/button.jsx"
+import { useTranslation } from "react-i18next"
+import { bindPijs } from "@/apis/auth.js"
 
-function Binding({ open, setOpen }) {
+function Binding() {
     const { isLogin, setIsLogin } = useContext(AccountsContext)
+    const { t } = useTranslation()
 
-    function handleBinding() {
-        setIsLogin(true)
+    function handleBinding(data) {
+        bindPijs(data).then(() => setIsLogin(true))
     }
 
+    const FormSchema = z.object({
+        username: z.string().min(2, {
+            message: "Username must be at least 2 characters.",
+        }),
+        password: z.string().min(6, {
+            message: "Password must be at least 6 characters.",
+        }),
+    })
+    const form = useForm({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            username: "",
+            password: "",
+        },
+    })
+
     return (
-        <Dialog open={open} onClose={() => setOpen(false)} onCancel={() => setOpen(false)} as="div"
-                className="relative z-10 focus:outline-none">
-            <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-[#000000e0] backdrop-saturate-20">
-                <div className="flex flex-col min-h-full items-center justify-center p-4 text-primary">
-                    <DialogPanel transition
-                                 className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0">
-                        <Fieldset className="space-y-6 mx-auto rounded-xl p-6 sm:p-10 w-2/3 bg-[#1F2328] relative">
-                            <img
-                                className="absolute w-5 aspect-square top-3 right-3 border-1 border-solid border-white rounded-full"
-                                src="/assets/Close.svg" alt="Close" onClick={() => setOpen(false)} />
-                            <DialogTitle className="flex gap-2">
-                                <img src="/assets/ArrowLeft.svg" alt="ArrowLeft" />
-                                <span>绑定PIJS账号</span>
-                            </DialogTitle>
-                            <Field>
-                                <Label className="text-sm/6 font-medium text-[#ABB1B9]">PIJSwap 账号</Label>
-                                <Input
-                                    className={clsx(
-                                        "mt-3 block w-full h-12 rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-[#ABB1B9]",
-                                        "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
-                                    )}
-                                    placeholder="请输入 PIJSwap 账号"
-                                />
-                            </Field>
-                            <Field>
-                                <Label className="text-sm/6 font-medium text-[#ABB1B9]">登录密码验证</Label>
-                                <Input
-                                    className={clsx(
-                                        "mt-3 block w-full h-12 rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-[#ABB1B9]",
-                                        "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
-                                    )}
-                                    placeholder="请输入登录密码"
-                                />
-                                <Description className="text-sm/6 text-white/50 mt-1">
-                                    绑定后不可修改，请认真确认
-                                </Description>
-                            </Field>
-                            <Button className="bg-primary w-full h-12 rounded-lg text-center text-black"
-                                    onClick={handleBinding}>绑定</Button>
-                        </Fieldset>
-                    </DialogPanel>
-                </div>
-            </div>
-        </Dialog>
+
+        <>
+            <DialogHeader>
+                <DialogTitle className="text-white flex gap-2 justify-start items-center">
+                    <img src="/assets/ArrowLeft.svg" alt="ArrowLeft" />
+                    <span className="text-primary">绑定PIJS账号</span>
+                </DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleBinding)} className="mb-0">
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                            <>
+                                <FormItem>
+                                    <FormLabel className="text-sm/6 font-medium text-[#ABB1B9] ">PIJSwap
+                                        账号</FormLabel>
+                                    <FormControl>
+                                        <Input className="border-[#494E54] text-[#474B50]"
+                                               placeholder="请输入 PIJSwap 账号" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            </>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem className="mt-5">
+                                <FormLabel className="text-sm/6 font-medium text-[#ABB1B9] ">登录密码验证</FormLabel>
+                                <FormControl>
+                                    <Input className="border-[#494E54] text-[#474B50]"
+                                           placeholder="请输入登录密码" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <DialogDescription className="text-[#5D6167]">绑定后不可修改，请认真确认</DialogDescription>
+
+                    <Button type="submit" className="mt-8 w-full h-12">{t("绑定")}</Button>
+                </form>
+            </Form>
+        </>
     )
 }
 

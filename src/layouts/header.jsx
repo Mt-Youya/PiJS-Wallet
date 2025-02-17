@@ -1,11 +1,19 @@
 import { useContext, useState } from "react"
+import { t } from "i18next"
 import { useTranslation } from "react-i18next"
-import { Button } from "@headlessui/react"
-import { useAppKit, useAppKitAccount, useDisconnect } from "@reown/appkit/react"
+import { toast } from "sonner"
+import { useAppKitAccount, useDisconnect } from "@reown/appkit/react"
+import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
 import { LanguageContext } from "../contexts/language.jsx"
+import { Toaster } from "../ui/sonner.jsx"
+import { connectWallet } from "@/apis/auth.js"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu.jsx"
+import { Button } from "@/ui/button.jsx"
+import Recommend from "@/components/Recommend.jsx"
+import AccountsProvider from "@/contexts/accounts.jsx"
 
 function Header() {
-    const { t, i18n } = useTranslation()
+    const { i18n } = useTranslation()
     const { setLang } = useContext(LanguageContext)
     const [expanded, setExpanded] = useState(false)
 
@@ -19,14 +27,39 @@ function Header() {
     }
 
     const [loading, setLoading] = useState(false)
-    const { open } = useAppKit()
-    const { isConnected, allAccounts } = useAppKitAccount()
+    const { isConnected, allAccounts, address } = useAppKitAccount()
     const { disconnect } = useDisconnect()
+    const { connect } = useAppKitWallet({
+        async onSuccess() {
+            const params = {
+                "walletAddress": address,
+                "signature": address,
+                "timestamp": +new Date,
+                "message": address,
+            }
+            const { data } = await connectWallet(params)
+            console.log("data.token", data.token)
+        },
+    })
+
+    const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]
+
+    async function loopConnect(wallet = "metamask") {
+        try {
+            await connect(wallet)
+            return true
+        } catch (e) {
+            return false
+        }
+    }
 
     async function handleConnect() {
         if (isConnected) return
         setLoading(true)
-        await open().catch(e => console.log(e))
+        for (const wallet of wallets) {
+            const res = await loopConnect(wallet)
+            if (res) break
+        }
         setLoading(false)
     }
 
@@ -34,19 +67,51 @@ function Header() {
         if (!isConnected) return
         setLoading(true)
         await disconnect()
+        toast("连接已断开!")
         setLoading(false)
     }
 
     return (
         <>
+            <Toaster />
             <header className="text-sm flex space-b w-full justify-between">
                 <img className="h-9" src="/assets/Logo.svg" alt="Logo" />
                 <nav className="flex gap-2 justify-between items-center">
-                    <Button className="bg-[#F4C134] py-2 px-4 rounded-lg max-w-40 overflow-hidden text-ellipsis"
-                            onClick={handleConnect}>
-                        {loading ? "connect ..." : !isConnected && t("连接钱包")}
-                        {allAccounts.map(account => account.address)}
-                    </Button>
+                    {
+                        isConnected ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex gap-2 border-solid-grey p-2 text-[#ABB1B9]">
+                                    <img className="w-4 h-4 aspect-square" src="/assets/Avatar.svg" alt="Expand" />
+                                    <span className="max-w-20 overflow-hidden text-ellipsis">
+                                      {address}
+                                     </span>
+                                    <img src="/assets/Dropdown.svg" alt="Dropdown" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    className="bg-[#191E22] rounded-xl px-4 py-5 w-42 text-white border-none">
+                                    <DropdownMenuItem>
+                                        <AccountsProvider>
+                                            <Recommend trigger={(
+                                                <>
+                                                    <img className="w-6 h-4.5" src="/assets/Binding.svg"
+                                                         alt="Binding" />
+                                                    <span>绑定推荐码</span>
+                                                </>
+                                            )} />
+                                        </AccountsProvider>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={handleExit}>
+                                        <img className="w-6 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" />
+                                        {t("断开连接")}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <Button className="bg-[#F4C134] py-2 px-4 rounded-lg" onClick={handleConnect}>
+                                {loading ? "connect ..." : !isConnected && t("连接钱包")}
+                            </Button>
+                        )
+                    }
                     <img src="/assets/Expand.svg" alt="Expand" onClick={() => setExpanded(prev => !prev)} />
                 </nav>
             </header>
@@ -75,9 +140,6 @@ function Header() {
                                 <li onClick={() => handleSwitchLang("en")}>English</li>
                             </ol>
                         </div>
-                        <li onClick={handleExit}>
-                            <img className="w-5 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" /> {t("断开连接")}
-                        </li>
                     </ul>
                 </div>
             </div>

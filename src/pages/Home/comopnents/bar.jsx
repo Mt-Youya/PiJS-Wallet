@@ -1,10 +1,9 @@
-import { useTranslation } from "react-i18next"
 import { useContext } from "react"
-import { LanguageContext } from "@/contexts/language.jsx"
 import { clsx } from "clsx"
+import { t } from "i18next"
+import { LanguageContext } from "@/contexts/language.jsx"
 
 function Bar() {
-    const { t } = useTranslation()
     const { lang } = useContext(LanguageContext)
     return (
         <div
