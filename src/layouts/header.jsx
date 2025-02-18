@@ -1,14 +1,15 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
-import { useAppKitAccount, useDisconnect } from "@reown/appkit/react"
+import { BrowserProvider, JsonRpcSigner } from "ethers"
+import { useAppKitAccount, useAppKitProvider, useDisconnect } from "@reown/appkit/react"
 import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
 import { LanguageContext } from "../contexts/language.jsx"
 import { Toaster } from "@/ui/sonner.jsx"
-import { connectWallet } from "@/apis/auth.js"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu.jsx"
-import { Button } from "@/ui/button.jsx"
+import { connectWallet } from "@/apis/auth.js"
 import { Local, Session } from "@/utils/storage.js"
+import { Button } from "@/ui/button.jsx"
 import Recommend from "@/components/Recommend.jsx"
 import AccountsProvider from "@/contexts/accounts.jsx"
 
@@ -29,21 +30,36 @@ function Header() {
     const [loading, setLoading] = useState(false)
     const { isConnected, allAccounts, address } = useAppKitAccount()
     const { disconnect } = useDisconnect()
-    const { connect } = useAppKitWallet({
-        async onSuccess() {
+    const { walletProvider } = useAppKitProvider("eip155")
+    const [parsedCaiAddress, setParsedCaiAddress] = useState(null)
+    const { connect, isSuccess } = useAppKitWallet({
+        onSuccess: parse => setParsedCaiAddress(parse),
+    })
+
+    useEffect(() => {
+        if (!isSuccess || !walletProvider || !parsedCaiAddress) return
+
+        async function createSignature() {
+            const { address } = parsedCaiAddress
+            const provider = new BrowserProvider(walletProvider)
+            const signer = new JsonRpcSigner(provider, address)
+            const message = "Hello PiJS"
+            const signature = await signer?.signMessage(message)
             const params = {
-                "walletAddress": address,
-                "signature": address,
-                "timestamp": +new Date,
-                "message": address,
+                walletAddress: address,
+                signature,
+                timestamp: +new Date,
+                message,
             }
             const { data } = await connectWallet(params)
-            if (data.token) {
+            if (data?.token) {
                 Session.set("token", data.token)
                 Local.set("token", data.token)
             }
-        },
-    })
+        }
+
+        createSignature()
+    }, [isSuccess, walletProvider, parsedCaiAddress])
 
     const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]
 
