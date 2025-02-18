@@ -14,8 +14,11 @@ function TextInput() {
     const [loading, setLoading] = useState(false)
     const [approval, setApproval] = useState(false)
 
-    async function handlePay() {
-        if (!userinfo) return toast("请先连接钱包!")
+    async function handlePay(e) {
+        if (!userinfo) {
+            e.preventDefault()
+            return toast("请先连接钱包!")
+        }
         setLoading(true)
         const { dataL: payInfo } = await paymentInfo()
 
@@ -50,7 +53,8 @@ function TextInput() {
                         <DialogContent
                             className="max-w-md text-center text-white border-none w-7/12 rounded-xl bg-white/5 p-6 backdrop-blur-2xl "
                         >
-                            {loading ? !approval ? <span>{t("批准100USDT参与私募")}</span> : <span>{t("支付100USDT参与私募")}</span> : (
+                            {loading && !approval ? <span>{t("批准100USDT参与私募")}</span> : <span>{t("支付100USDT参与私募")}</span>}
+                            {isPaid && (
                                 <div className="mt-4">
                                     <p>支付完成，您已完成私募</p>
                                     <br />

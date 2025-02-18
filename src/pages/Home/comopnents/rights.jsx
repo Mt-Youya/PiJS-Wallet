@@ -1,15 +1,21 @@
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { t } from "i18next"
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card.jsx"
 import { UserInfoContext } from "@/contexts/userInfo.jsx"
 import { AccountsContext } from "@/contexts/accounts.jsx"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 import Copy from "@/components/Copy.jsx"
+import { recomentIncome } from "@/apis/auth.js"
 
 function Rights() {
     const { isBindingRecommend } = useContext(AccountsContext)
     const { userinfo } = useContext(UserInfoContext)
     const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
+
+    const [income, setIncome] = useState(0)
+    useEffect(() => {
+        recomentIncome().then(({ data }) => setIncome(data?.totalIncome || 0))
+    }, [])
 
     return (
         <>
@@ -36,7 +42,7 @@ function Rights() {
                     <CardContent className="p-0 mt-4">
                         <div className="flex justify-between">
                             <span className="flex gap-1 justify-center items-center">
-                                <b className="font-bold text-xl"> {500}</b> USDT
+                                <b className="font-bold text-xl"> {income}</b> USDT
                                 <img src="/assets/DirectionRight.svg" alt="DirectionRight" />
                             </span>
                             <SplitNumberSquare number={inviteCode} size="small" />

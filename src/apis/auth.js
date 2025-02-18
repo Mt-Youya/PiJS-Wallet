@@ -73,6 +73,20 @@ export function bindReferrer(inviteCode) {
     })
 }
 
+export function recomentIncome() {
+    return request({
+        url: "/api/invite/recomentIncome",
+        method: METHOD.POST,
+    })
+}
+
+export function recomentList() {
+    return request({
+        url: "/api/invite/recomentList",
+        method: METHOD.POST,
+    })
+}
+
 export function exchange(data) {
     return request({
         url: "/api/points/exchange",

@@ -28,7 +28,7 @@ function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10,
                     <TableRow className="bg-[#C2C2C2] text-center">
                         <TableHead key="index">Number</TableHead>
                         {columns.map((column, index) => (
-                            <TableHead className="px-2" key={column.dataIndex}> {column.dataIndex} </TableHead>
+                            <TableHead className="px-2" key={column.dataIndex + index}> {column.title} </TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>
@@ -38,7 +38,7 @@ function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10,
                             <TableCell className="px-2" key={`${rowIndex}-`}> {rowIndex + 1} </TableCell>
                             {columns.map((column, colIndex) => (
                                 <TableCell className="px-2" key={`${rowIndex}-${colIndex}`}>
-                                    {column.render ? column.render(row) : row[column.dataIndex]}
+                                    {row[column.dataIndex] ?? "-"}
                                 </TableCell>
                             ))}
                         </TableRow>

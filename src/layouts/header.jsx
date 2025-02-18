@@ -30,10 +30,10 @@ function Header() {
     }
 
     const [loading, setLoading] = useState(false)
-    const { isConnected, allAccounts, address } = useAppKitAccount()
+    const [parsedCaiAddress, setParsedCaiAddress] = useState(null)
+    const { isConnected, address } = useAppKitAccount()
     const { disconnect } = useDisconnect()
     const { walletProvider } = useAppKitProvider("eip155")
-    const [parsedCaiAddress, setParsedCaiAddress] = useState(null)
     const { connect, isSuccess } = useAppKitWallet({
         onSuccess: parse => setParsedCaiAddress(parse),
     })
@@ -57,7 +57,6 @@ function Header() {
             if (data?.token) {
                 Session.set("token", data.token)
                 Local.set("token", data.token)
-
             }
             getUserinfo()
         }
@@ -67,8 +66,8 @@ function Header() {
 
     async function getUserinfo() {
         const { data } = await userInfo()
-        console.log("data", data)
         setUserinfo(data)
+        Session.set("userInfo", data)
     }
 
     const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]

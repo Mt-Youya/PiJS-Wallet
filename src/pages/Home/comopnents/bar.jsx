@@ -1,14 +1,11 @@
-import { useContext } from "react"
 import { clsx } from "clsx"
 import { useTranslation } from "react-i18next"
-import { LanguageContext } from "@/contexts/language.jsx"
 
 function Bar() {
-    const { lang } = useContext(LanguageContext)
     const { t } = useTranslation()
     return (
         <div
-            className={clsx("bg-[#f6b74c1a] w-[calc(100%+32px)] my-4 -ml-4 flex gap-2 py-3 px-4 text-xs", lang === "zh" ? "h-15" : "h-22")}>
+            className={clsx("bg-[#f6b74c1a] w-[calc(100%+32px)] my-4 -ml-4 flex gap-2 py-3 px-4 text-xs")}>
             <div className="w-6 h-6">
                 <img src="/assets/Info.svg" alt="info" />
             </div>

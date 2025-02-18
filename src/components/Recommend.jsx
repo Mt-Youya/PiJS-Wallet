@@ -1,6 +1,6 @@
-import { useContext, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
-import { bindReferrer } from "@/apis/auth.js"
+import { bindReferrer, recomentList } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { AccountsContext } from "@/contexts/accounts.jsx"
 import { UserInfoContext } from "@/contexts/userInfo.jsx"
@@ -12,30 +12,15 @@ function Recommend({ trigger }) {
     const [loading, setLoading] = useState(false)
     const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
     const columns = [
-        { dataIndex: "Address" },
-        { dataIndex: "Number of Nodes" },
-        { dataIndex: "Contribution Rewards" },
+        { dataIndex: "walletAddress", title: "Address" },
+        { dataIndex: "payAmount", title: "Contribution Rewards" },
     ]
 
-    const dataSource = [
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        // { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        // { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        // { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        // { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        // { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-        { "Address": "123", "Number of Nodes": "213234", "Contribution Rewards": "dfghiadfbn " },
-    ]
+    const [dataSource, setDataSource] = useState([])
+
+    useEffect(() => {
+        recomentList().then(({ data }) => setDataSource(data))
+    }, [])
 
     const [pagination, setPagination] = useState({
         current: 1,
