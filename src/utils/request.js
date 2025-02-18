@@ -2,7 +2,7 @@ import axios from "axios"
 import { Local, Session } from "@/utils/storage.js"
 
 const service = axios.create({
-    baseURL: "/",
+    baseURL: import.meta.env.PROD ? import.meta.env.VITE_API_URL : "/",
     timeout: 200000,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },
