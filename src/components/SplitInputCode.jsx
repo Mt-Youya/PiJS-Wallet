@@ -1,8 +1,8 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Input } from "@/ui/input.jsx"
 
-function SplitInputCode({ onChange }) {
-    const [code, setCode] = useState(Array(6).fill(""))
+function SplitInputCode({ onChange, length = 6 }) {
+    const [code, setCode] = useState(Array(length).fill(""))
 
     function handleChange(e, index) {
         const value = e.target.value
@@ -11,18 +11,33 @@ function SplitInputCode({ onChange }) {
 
         const inputs = iptsRef.current
 
-        if (value && index < 5) {
+        if (value && index < length - 1) {
             inputs[index + 1].focus()
         }
         setCode(newCode)
-        onChange?.(newCode.join())
     }
 
     function handleKeyDown(e, index) {
         if (e.key === "Backspace" && !code[index] && index > 0) {
-            iptsRef.current[index - 1].focus()
+            return iptsRef.current[index - 1].focus()
+        }
+        if (e.key === "ArrowLeft") {
+            return iptsRef.current[index && index - 1].focus()
+        } else if (e.key === "ArrowRight") {
+            return iptsRef.current[index < length - 1 && index + 1].focus()
+        }
+
+        if (!/^[a-zA-Z0-9]$/.test(e.key)) return
+        if (code[index]) {
+            const newCode = [...code]
+            newCode[index] = e.key
+            setCode(newCode)
         }
     }
+
+    useEffect(() => {
+        onChange?.(code.join())
+    }, [code])
 
     const iptsRef = useRef([])
     return (

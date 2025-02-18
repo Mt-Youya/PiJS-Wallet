@@ -51,10 +51,11 @@ export function paymentStatus() {
     })
 }
 
-export function submitPayment() {
+export function submitPayment(data) {
     return request({
         url: "/api/wallet/submitPayment",
-        method: METHOD.GET,
+        method: METHOD.POST,
+        data,
     })
 }
 

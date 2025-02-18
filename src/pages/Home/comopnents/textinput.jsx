@@ -23,12 +23,13 @@ function TextInput() {
             return toast("请先连接钱包!")
         }
         setLoading(true)
-        const { dataL: payInfo } = await paymentInfo()
+        const { data: payInfo } = await paymentInfo()
 
         if (payInfo) {
             const { data: { message, success } = {} } = await submitPayment({ ...payInfo, address: userinfo?.wallet })
             setApproval(success)
             toast(message)
+            if (!success) return
             const timer = setInterval(async () => {
                 const { data } = await paymentStatus()
                 if (data?.completed) {
@@ -58,8 +59,8 @@ function TextInput() {
                             className="max-w-md text-center text-white border-none w-7/12 rounded-xl bg-white/5 p-6 backdrop-blur-2xl "
                         >
                             {loading && !approval ?
-                                <>  <Loading /> <span>{t("批准100USDT参与私募")}</span>  </>
-                                : <> <Loading /> <span>{t("支付100USDT参与私募")}</span> </>
+                                <>  <Loading /> <span>{t("批准100USDT参与活动")}</span>  </>
+                                : <> <Loading /> <span>{t("支付100USDT参与活动")}</span> </>
                             }
                             {isPaid && (
                                 <div className="mt-4">
