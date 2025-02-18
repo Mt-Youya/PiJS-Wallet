@@ -1,23 +1,25 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { BrowserProvider, JsonRpcSigner } from "ethers"
 import { useAppKitAccount, useAppKitProvider, useDisconnect } from "@reown/appkit/react"
 import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
-import { LanguageContext } from "../contexts/language.jsx"
-import { UserInfoContext } from "@/contexts/userInfo.jsx"
-import { Toaster } from "@/ui/sonner.jsx"
+import { langStore } from "@/stores/lang.js"
+import { userinfoStore } from "@/stores/userinfo.js"
+import { contractInfoStore } from "@/stores/contract.js"
+import { incomeInfoStore } from "@/stores/income.js"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu.jsx"
-import { connectWallet, userInfo } from "@/apis/auth.js"
+import { connectWallet, recomentIncome, userInfo } from "@/apis/auth.js"
 import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
 import Recommend from "@/components/Recommend.jsx"
-import AccountsProvider from "@/contexts/accounts.jsx"
 
 function Header() {
     const { i18n, t } = useTranslation()
-    const { setLang } = useContext(LanguageContext)
-    const { setUserinfo } = useContext(UserInfoContext)
+    const { setLang } = langStore()
+    const { setUserinfo } = userinfoStore()
+    const { setContractInfo } = contractInfoStore()
+    const { setIncomeInfo } = incomeInfoStore()
     const [expanded, setExpanded] = useState(false)
 
     const [switchLanguage, setSwitchLanguage] = useState(false)
@@ -38,20 +40,36 @@ function Header() {
         onSuccess: parse => setParsedCaiAddress(parse),
     })
 
+    async function createContract() {
+        const { address } = parsedCaiAddress
+        const provider = new BrowserProvider(walletProvider)
+        const signer = new JsonRpcSigner(provider, address)
+        const message = "Hello PiJS"
+        const signature = await signer?.signMessage(message)
+        // const USDTContract = new Contract(USDTAddress, USDTAbi, signer)
+        // const USDTBalance = await USDTContract?.balanceOf?.(address)
+
+        return {
+            address,
+            signer,
+            signature,
+            message,
+            // contract: USDTContract,
+            // balance: USDTBalance && formatUnits(USDTBalance, 18),
+        }
+    }
+
     useEffect(() => {
         if (!isSuccess || !walletProvider || !parsedCaiAddress) return
 
         async function createSignature() {
-            const { address } = parsedCaiAddress
-            const provider = new BrowserProvider(walletProvider)
-            const signer = new JsonRpcSigner(provider, address)
-            const message = "Hello PiJS"
-            const signature = await signer?.signMessage(message)
+            const contract = createContract()
+            setContractInfo(contract)
             const params = {
-                walletAddress: address,
-                signature,
+                walletAddress: contract?.address,
+                signature: contract?.signature,
                 timestamp: +new Date,
-                message,
+                message: contract?.message,
             }
             const { data } = await connectWallet(params)
             if (data?.token) {
@@ -59,6 +77,7 @@ function Header() {
                 Local.set("token", data.token)
             }
             getUserinfo()
+            recomentIncome().then(({ data }) => setIncomeInfo(data?.totalIncome || 0))
         }
 
         createSignature()
@@ -85,8 +104,8 @@ function Header() {
         if (isConnected) return
         setLoading(true)
         for (const wallet of wallets) {
-            const res = await loopConnect(wallet)
-            if (res) break
+            const result = await loopConnect(wallet)
+            if (result) break
         }
         setLoading(false)
     }
@@ -97,11 +116,12 @@ function Header() {
         await disconnect()
         toast("连接已断开!")
         setLoading(false)
+        Session.clear()
+        Local.clear()
     }
 
     return (
         <>
-            <Toaster />
             <header className="text-sm flex space-b w-full justify-between">
                 <img className="h-9" src="/assets/Logo.svg" alt="Logo" />
                 <nav className="flex gap-2 justify-between items-center">
@@ -116,15 +136,13 @@ function Header() {
                                 <DropdownMenuContent
                                     className="bg-[#191E22] rounded-xl px-4 py-5 w-42 text-white border-none">
                                     <DropdownMenuItem>
-                                        <AccountsProvider>
-                                            <Recommend trigger={(
-                                                <>
-                                                    <img className="w-6 h-4.5" src="/assets/Binding.svg"
-                                                         alt="Binding" />
-                                                    <span>绑定推荐码</span>
-                                                </>
-                                            )} />
-                                        </AccountsProvider>
+                                        <Recommend trigger={(
+                                            <>
+                                                <img className="w-6 h-4.5" src="/assets/Binding.svg"
+                                                     alt="Binding" />
+                                                <span>绑定推荐码</span>
+                                            </>
+                                        )} />
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={handleExit}>
                                         <img className="w-6 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" />

@@ -1,17 +1,17 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { Button } from "@/ui/button.jsx"
 import { Textarea } from "@/ui/textarea.jsx"
 import { fundConfig, paymentInfo, paymentStatus, submitPayment } from "@/apis/auth.js"
-import { UserInfoContext } from "@/contexts/userInfo.jsx"
-import { CellFolderContext } from "@/contexts/cellFolder.jsx"
+import { cellFolderStore } from "@/stores/cellFolder.js"
+import { userinfoStore } from "@/stores/userinfo.js"
 import Loading from "@/components/Loading.jsx"
 
 function TextInput() {
-    const { userinfo } = useContext(UserInfoContext)
-    const { setCellOptions } = useContext(CellFolderContext)
+    const { userinfo } = userinfoStore()
+    const { setCellOptions } = cellFolderStore()
     const { t } = useTranslation()
     const [isPaid, setIsPaid] = useState(userinfo?.isPaid)
     const [loading, setLoading] = useState(false)

@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { bindReferrer, recomentList } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
-import { AccountsContext } from "@/contexts/accounts.jsx"
+import { accountStore } from "@/stores/accounts.js"
 import TablePage from "@/components/TablePage.jsx"
 import SplitInputCode from "@/components/SplitInputCode.jsx"
 
 function Recommend({ trigger }) {
-    const { setIsBindingRecommend } = useContext(AccountsContext)
+    const { setIsBindingRecommend } = accountStore()
     const [loading, setLoading] = useState(false)
     const columns = [
         { dataIndex: "walletAddress", title: "Address" },

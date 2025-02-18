@@ -1,15 +1,15 @@
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { t } from "i18next"
+import { recomentIncome } from "@/apis/auth.js"
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card.jsx"
-import { UserInfoContext } from "@/contexts/userInfo.jsx"
-import { AccountsContext } from "@/contexts/accounts.jsx"
+import { accountStore } from "@/stores/accounts.js"
+import { userinfoStore } from "@/stores/userinfo.js"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 import Copy from "@/components/Copy.jsx"
-import { recomentIncome } from "@/apis/auth.js"
 
 function Rights() {
-    const { isBindingRecommend } = useContext(AccountsContext)
-    const { userinfo } = useContext(UserInfoContext)
+    const { isBindingRecommend } = accountStore()
+    const { userinfo } = userinfoStore()
     const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
 
     const [income, setIncome] = useState(0)

@@ -1,15 +1,14 @@
-import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { AccountsContext } from "../contexts/accounts.jsx"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { accountStore } from "@/stores/accounts.js"
 import { DialogClose, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog.jsx"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form.jsx"
 import { Button } from "../ui/button.jsx"
 import { Input } from "../ui/input.jsx"
 
 function Exchange() {
-    const { isBinding, isSimu } = useContext(AccountsContext)
+    const { isBinding, isSimu } = accountStore
 
     if (!isBinding || !isSimu) {
         const text = !isBinding ? "绑定PIJS账号" : "完成私募"

@@ -1,12 +1,12 @@
-import { useContext, useEffect, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { fundConfig } from "@/apis/auth.js"
-import { CellFolderContext } from "@/contexts/cellFolder.jsx"
+import { cellFolderStore } from "@/stores/cellFolder.js"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 
 function Cell() {
     const { t } = useTranslation()
-    const { cellOptions: options, setCellOptions } = useContext(CellFolderContext)
+    const { cellOptions: options, setCellOptions } = cellFolderStore()
 
     async function getOptions() {
         fundConfig().then(({ data }) => setCellOptions(data))

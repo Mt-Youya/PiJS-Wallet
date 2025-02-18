@@ -1,5 +1,3 @@
-import { AccountsContext } from "../contexts/accounts.jsx"
-import { useContext } from "react"
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog.jsx"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,9 +7,10 @@ import { Input } from "@/ui/input.jsx"
 import { Button } from "@/ui/button.jsx"
 import { useTranslation } from "react-i18next"
 import { bindPijs } from "@/apis/auth.js"
+import { accountStore } from "@/stores/accounts.js"
 
 function Binding() {
-    const { isLogin, setIsLogin } = useContext(AccountsContext)
+    const { isLogin, setIsLogin } = accountStore()
     const { t } = useTranslation()
 
     function handleBinding(data) {
