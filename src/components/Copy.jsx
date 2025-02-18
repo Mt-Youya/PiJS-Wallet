@@ -4,10 +4,10 @@ function Copy({ code }) {
     function handleCopy() {
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(code).then(() => {
-                toast("复制成功!")
+                toast.success("复制成功!")
             }).catch(err => {
                 console.error("复制失败:", err)
-                toast("复制失败，请重试！")
+                toast.error("复制失败，请重试！")
             })
         } else {
             const textArea = document.createElement("textarea")
@@ -19,10 +19,10 @@ function Copy({ code }) {
             textArea.select()
             try {
                 const successful = document.execCommand("copy")
-                toast(successful ? "复制成功！" : "复制失败！")
+                toast[successful ? "success" : "error"](successful ? "复制成功！" : "复制失败！")
             } catch (err) {
                 console.error("复制失败:", err)
-                toast("复制失败，请重试！")
+                toast.error("复制失败，请重试！")
             }
             document.body.removeChild(textArea)
         }

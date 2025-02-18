@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { connectWallet, recomentIncome, userInfo } from "@/apis/auth.js"
 import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
+import { Toaster } from "@/ui/toaster.jsx"
 import Recommend from "@/components/Recommend.jsx"
 
 function Header() {
@@ -114,7 +115,7 @@ function Header() {
         if (!isConnected) return
         setLoading(true)
         await disconnect()
-        toast("连接已断开!")
+        toast.success("连接已断开!")
         setLoading(false)
         Session.clear()
         Local.clear()
@@ -122,6 +123,7 @@ function Header() {
 
     return (
         <>
+            <Toaster />
             <header className="text-sm flex space-b w-full justify-between">
                 <img className="h-9" src="/assets/Logo.svg" alt="Logo" />
                 <nav className="flex gap-2 justify-between items-center">

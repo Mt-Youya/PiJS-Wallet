@@ -20,7 +20,7 @@ function TextInput() {
     async function handlePay(e) {
         if (!userinfo) {
             e.preventDefault()
-            return toast("请先连接钱包!")
+            return toast.warning("请先连接钱包!")
         }
         setLoading(true)
         const { data: payInfo } = await paymentInfo()
@@ -28,12 +28,12 @@ function TextInput() {
         if (payInfo) {
             const { data: { message, success } = {} } = await submitPayment({ ...payInfo, address: userinfo?.wallet })
             setApproval(success)
-            toast(message)
-            if (!success) return
+            if (!success) return toast.error(message)
+            toast.success(message)
             const timer = setInterval(async () => {
                 const { data } = await paymentStatus()
                 if (data?.completed) {
-                    toast("支付成功!")
+                    toast.success("支付成功!")
                     clearInterval(timer)
                     setLoading(false)
                     setIsPaid(true)

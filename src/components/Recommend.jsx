@@ -33,7 +33,7 @@ function Recommend({ trigger }) {
         setLoading(true)
         const { success } = await bindReferrer(inviteCode)
         if (success) {
-            toast("绑定成功!")
+            toast.success("绑定成功!")
             setIsBindingRecommend(true)
         }
         setLoading(false)
