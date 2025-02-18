@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
-import { t } from "i18next"
+import { useTranslation } from "react-i18next"
 import { fundConfig } from "@/apis/auth.js"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 
 function Cell() {
+    const { t } = useTranslation()
     const [options, setOptions] = useState({ total: 0, used: 0, remain: 0 })
 
     async function getOptions() {

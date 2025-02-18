@@ -1,19 +1,19 @@
 import { useContext, useState } from "react"
-import { t } from "i18next"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { useAppKitAccount, useDisconnect } from "@reown/appkit/react"
 import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
 import { LanguageContext } from "../contexts/language.jsx"
-import { Toaster } from "../ui/sonner.jsx"
+import { Toaster } from "@/ui/sonner.jsx"
 import { connectWallet } from "@/apis/auth.js"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu.jsx"
 import { Button } from "@/ui/button.jsx"
+import { Local, Session } from "@/utils/storage.js"
 import Recommend from "@/components/Recommend.jsx"
 import AccountsProvider from "@/contexts/accounts.jsx"
 
 function Header() {
-    const { i18n } = useTranslation()
+    const { i18n, t } = useTranslation()
     const { setLang } = useContext(LanguageContext)
     const [expanded, setExpanded] = useState(false)
 
@@ -38,7 +38,10 @@ function Header() {
                 "message": address,
             }
             const { data } = await connectWallet(params)
-            console.log("data.token", data.token)
+            if (data.token) {
+                Session.set("token", data.token)
+                Local.set("token", data.token)
+            }
         },
     })
 

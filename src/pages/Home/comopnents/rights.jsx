@@ -24,7 +24,7 @@ function Rights() {
                 <li>{t("优先访问：未来生态系统项目")}</li>
                 <li>{t("LP质押提现：取消上述权利")}</li>
             </ul>
-            {isBindingRecommend ? (
+            {!isBindingRecommend ? (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">
