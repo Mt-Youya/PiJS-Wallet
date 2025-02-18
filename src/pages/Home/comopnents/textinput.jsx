@@ -1,14 +1,17 @@
 import { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { toast } from "sonner"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { Button } from "@/ui/button.jsx"
 import { Textarea } from "@/ui/textarea.jsx"
-import { paymentInfo, paymentStatus, submitPayment } from "@/apis/auth.js"
+import { fundConfig, paymentInfo, paymentStatus, submitPayment } from "@/apis/auth.js"
 import { UserInfoContext } from "@/contexts/userInfo.jsx"
-import { toast } from "sonner"
+import { CellFolderContext } from "@/contexts/cellFolder.jsx"
+import Loading from "@/components/Loading.jsx"
 
 function TextInput() {
     const { userinfo } = useContext(UserInfoContext)
+    const { setCellOptions } = useContext(CellFolderContext)
     const { t } = useTranslation()
     const [isPaid, setIsPaid] = useState(userinfo?.isPaid)
     const [loading, setLoading] = useState(false)
@@ -33,6 +36,7 @@ function TextInput() {
                     clearInterval(timer)
                     setLoading(false)
                     setIsPaid(true)
+                    fundConfig().then(({ data }) => setCellOptions(data))
                 }
             }, 2000)
         }
@@ -53,7 +57,10 @@ function TextInput() {
                         <DialogContent
                             className="max-w-md text-center text-white border-none w-7/12 rounded-xl bg-white/5 p-6 backdrop-blur-2xl "
                         >
-                            {loading && !approval ? <span>{t("批准100USDT参与私募")}</span> : <span>{t("支付100USDT参与私募")}</span>}
+                            {loading && !approval ?
+                                <>  <Loading /> <span>{t("批准100USDT参与私募")}</span>  </>
+                                : <> <Loading /> <span>{t("支付100USDT参与私募")}</span> </>
+                            }
                             {isPaid && (
                                 <div className="mt-4">
                                     <p>支付完成，您已完成私募</p>

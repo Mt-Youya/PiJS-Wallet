@@ -9,6 +9,7 @@ import Binding from "@/components/Binding.jsx"
 import Exchange from "@/components/Exchange.jsx"
 import AccountsProvider from "@/contexts/accounts.jsx"
 import UserInfoProvider from "@/contexts/userInfo.jsx"
+import CellFolderProvider from "@/contexts/cellFolder.jsx"
 
 function Home() {
     const { t } = useTranslation()
@@ -31,8 +32,10 @@ function Home() {
                                  )}
                     />
                 </AccountsProvider>
-                <Textarea />
-                <Cell />
+                <CellFolderProvider>
+                    <Textarea />
+                    <Cell />
+                </CellFolderProvider>
                 <AccountsProvider>
                     <Rights />
                 </AccountsProvider>

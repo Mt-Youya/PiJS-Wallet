@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { fundConfig } from "@/apis/auth.js"
+import { CellFolderContext } from "@/contexts/cellFolder.jsx"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 
 function Cell() {
     const { t } = useTranslation()
-    const [options, setOptions] = useState({ total: 0, used: 0, remain: 0 })
+    const { cellOptions: options, setCellOptions } = useContext(CellFolderContext)
 
     async function getOptions() {
-        const { data } = await fundConfig()
-        setOptions(data)
+        fundConfig().then(({ data }) => setCellOptions(data))
     }
 
     const sellRate = useMemo(() => (options?.used / options?.total * 100).toFixed(2), [options])

@@ -1,16 +1,14 @@
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { bindReferrer, recomentList } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { AccountsContext } from "@/contexts/accounts.jsx"
-import { UserInfoContext } from "@/contexts/userInfo.jsx"
 import TablePage from "@/components/TablePage.jsx"
+import SplitInputCode from "@/components/SplitInputCode.jsx"
 
 function Recommend({ trigger }) {
     const { setIsBindingRecommend } = useContext(AccountsContext)
-    const { userinfo } = useContext(UserInfoContext)
     const [loading, setLoading] = useState(false)
-    const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
     const columns = [
         { dataIndex: "walletAddress", title: "Address" },
         { dataIndex: "payAmount", title: "Contribution Rewards" },
@@ -28,6 +26,8 @@ function Recommend({ trigger }) {
         total: dataSource.length,
     })
 
+    const [inviteCode, setInviteCode] = useState("")
+
     async function handleBindingRecommend(e) {
         e.stopPropagation()
         setLoading(true)
@@ -42,15 +42,9 @@ function Recommend({ trigger }) {
     return (
         <>
             <Dialog>
-                <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]">
+                <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]" onClick={e => e.stopPropagation()}>
                     <DialogTitle className="text-white">绑定推荐码 <DialogDescription /></DialogTitle>
-                    <ul className="flex justify-between my-4">
-                        {inviteCode?.toString().split("").map((str, index) => (
-                            <li key={index}
-                                className="w-12 h-12 border-solid-grey text-white leading-10 text-center">{str}</li>
-                        ))}
-                    </ul>
-
+                    <SplitInputCode onChange={e => setInviteCode(e)} />
                     <DialogFooter>
                         <Dialog>
                             <DialogTrigger className="w-full h-12 bg-primary text-center rounded-lg" onClick={handleBindingRecommend}
