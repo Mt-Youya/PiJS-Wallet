@@ -1,11 +1,16 @@
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
+import { toast } from "sonner"
+import { bindReferrer } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { AccountsContext } from "@/contexts/accounts.jsx"
+import { UserInfoContext } from "@/contexts/userInfo.jsx"
 import TablePage from "@/components/TablePage.jsx"
 
 function Recommend({ trigger }) {
     const { setIsBindingRecommend } = useContext(AccountsContext)
-    const code = 104980
+    const { userinfo } = useContext(UserInfoContext)
+    const [loading, setLoading] = useState(false)
+    const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
     const columns = [
         { dataIndex: "Address" },
         { dataIndex: "Number of Nodes" },
@@ -38,10 +43,15 @@ function Recommend({ trigger }) {
         total: dataSource.length,
     })
 
-    function handleBindingRecommend(e) {
+    async function handleBindingRecommend(e) {
         e.stopPropagation()
-        setIsBindingRecommend(true)
-
+        setLoading(true)
+        const { success } = await bindReferrer(inviteCode)
+        if (success) {
+            toast("绑定成功!")
+            setIsBindingRecommend(true)
+        }
+        setLoading(false)
     }
 
     return (
@@ -50,7 +60,7 @@ function Recommend({ trigger }) {
                 <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]">
                     <DialogTitle className="text-white">绑定推荐码 <DialogDescription /></DialogTitle>
                     <ul className="flex justify-between my-4">
-                        {code.toString().split("").map((str, index) => (
+                        {inviteCode?.toString().split("").map((str, index) => (
                             <li key={index}
                                 className="w-12 h-12 border-solid-grey text-white leading-10 text-center">{str}</li>
                         ))}
@@ -58,8 +68,8 @@ function Recommend({ trigger }) {
 
                     <DialogFooter>
                         <Dialog>
-                            <DialogTrigger className="w-full h-12 bg-primary text-center"
-                                           onClick={handleBindingRecommend}>
+                            <DialogTrigger className="w-full h-12 bg-primary text-center rounded-lg" onClick={handleBindingRecommend}
+                                           disabled={loading}>
                                 确认绑定
                             </DialogTrigger>
                             <DialogContent className="border-[#685319] w-11/12 rounded-lg">

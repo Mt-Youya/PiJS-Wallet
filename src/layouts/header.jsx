@@ -5,9 +5,10 @@ import { BrowserProvider, JsonRpcSigner } from "ethers"
 import { useAppKitAccount, useAppKitProvider, useDisconnect } from "@reown/appkit/react"
 import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
 import { LanguageContext } from "../contexts/language.jsx"
+import { UserInfoContext } from "@/contexts/userInfo.jsx"
 import { Toaster } from "@/ui/sonner.jsx"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu.jsx"
-import { connectWallet } from "@/apis/auth.js"
+import { connectWallet, userInfo } from "@/apis/auth.js"
 import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
 import Recommend from "@/components/Recommend.jsx"
@@ -16,6 +17,7 @@ import AccountsProvider from "@/contexts/accounts.jsx"
 function Header() {
     const { i18n, t } = useTranslation()
     const { setLang } = useContext(LanguageContext)
+    const { setUserinfo } = useContext(UserInfoContext)
     const [expanded, setExpanded] = useState(false)
 
     const [switchLanguage, setSwitchLanguage] = useState(false)
@@ -55,11 +57,19 @@ function Header() {
             if (data?.token) {
                 Session.set("token", data.token)
                 Local.set("token", data.token)
+
             }
+            getUserinfo()
         }
 
         createSignature()
     }, [isSuccess, walletProvider, parsedCaiAddress])
+
+    async function getUserinfo() {
+        const { data } = await userInfo()
+        console.log("data", data)
+        setUserinfo(data)
+    }
 
     const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]
 
@@ -101,9 +111,7 @@ function Header() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex gap-2 border-solid-grey p-2 text-[#ABB1B9]">
                                     <img className="w-4 h-4 aspect-square" src="/assets/Avatar.svg" alt="Expand" />
-                                    <span className="max-w-20 overflow-hidden text-ellipsis">
-                                      {address}
-                                     </span>
+                                    <span className="max-w-20 overflow-hidden text-ellipsis"> {address} </span>
                                     <img src="/assets/Dropdown.svg" alt="Dropdown" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
@@ -147,11 +155,11 @@ function Header() {
                         <li><img className="w-5 h-5 aspect-square" src="/assets/Home.svg" alt="Home" /> {t("首页")}</li>
                         <li className="relative" onClick={() => setSwitchLanguage(prevState => !prevState)}>
                             <img className="w-5 h-5 aspect-square" src="/assets/Language.svg"
-                                 alt="Language" /> {t("语言")}
+                                 alt="Language" />
+                            {t("语言")}
                             <img
                                 className={`w-5 h-5 aspect-square block ml-auto transition-all ${switchLanguage ? "rotate-180" : "rotate-0"}`}
-                                src="/assets/Dropdown.svg"
-                                alt="Dropdown" />
+                                src="/assets/Dropdown.svg" alt="Dropdown" />
                         </li>
                         <div className="ml-9" style={{ padding: 0 }}>
                             <ol className={`${!switchLanguage ? "hidden" : "block"} *:py-2`}>

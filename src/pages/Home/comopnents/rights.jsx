@@ -1,14 +1,15 @@
-import { useContext } from "react"
+import { useContext, useMemo } from "react"
 import { t } from "i18next"
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card.jsx"
+import { UserInfoContext } from "@/contexts/userInfo.jsx"
 import { AccountsContext } from "@/contexts/accounts.jsx"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 import Copy from "@/components/Copy.jsx"
 
 function Rights() {
     const { isBindingRecommend } = useContext(AccountsContext)
-    const recommendCode = 88888
-    const inviteCode = 123456
+    const { userinfo } = useContext(UserInfoContext)
+    const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
 
     return (
         <>
@@ -24,12 +25,12 @@ function Rights() {
                 <li>{t("优先访问：未来生态系统项目")}</li>
                 <li>{t("LP质押提现：取消上述权利")}</li>
             </ul>
-            {!isBindingRecommend ? (
+            {isBindingRecommend ? (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">
                             <span>推荐奖励</span>
-                            <span className="flex gap-2">我的推荐代码<Copy code={recommendCode} /> </span>
+                            <span className="flex gap-2">我的推荐代码<Copy code={inviteCode} /> </span>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-0 mt-4">
@@ -38,14 +39,14 @@ function Rights() {
                                 <b className="font-bold text-xl"> {500}</b> USDT
                                 <img src="/assets/DirectionRight.svg" alt="DirectionRight" />
                             </span>
-                            <SplitNumberSquare number={recommendCode} size="small" />
+                            <SplitNumberSquare number={inviteCode} size="small" />
                         </div>
                         <p>Invitation to 50 NFTs</p>
                         <br />
                         <div className="flex justify-between">
                             <a className="text-white">
                                 Referral Link：<br />
-                                https://abc.abc.com/inviteCode=?123456
+                                https://abc.abc.com/inviteCode=?{inviteCode}
                             </a>
                             <span><Copy code={inviteCode} /></span>
                         </div>
