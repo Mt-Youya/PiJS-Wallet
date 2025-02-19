@@ -97,7 +97,7 @@ function TextInput() {
                 <Textarea
                     className="border data-[hover]:shadow data-[focus]:bg-blue-100 block w-full h-32 bg-[#2A2A2A] rounded-lg" />
             </div>
-            {isPaid ?
+            {!isPaid ?
                 <Dialog as="div" className="relative z-10 focus:outline-none">
                     <DialogTrigger
                         className="bg-primary p-3 rounded-xl w-[calc(100%-2rem)] m-auto block"
@@ -114,7 +114,7 @@ function TextInput() {
                                 <span>{t(`${!approval ? "批准" : "支付"}100USDT参与活动`)}</span>
                             </>
                         )}
-                        {!isPaid && (
+                        {isPaid && (
                             <div className="mt-4">
                                 <p>{t("支付完成")}。{t("您已完成私募")}</p>
                                 <br />
