@@ -3,6 +3,12 @@ import { Input } from "@/ui/input.jsx"
 
 function SplitInputCode({ comInCode = "", onChange, length = 6 }) {
     const [code, setCode] = useState(comInCode?.split("") ?? Array(length).fill(""))
+    
+    useEffect(() => {
+        if (!code || Array.isArray(code) || code.length < 6) {
+            setCode(Array(6).fill(""))
+        }
+    }, [code])
 
     function handleChange(e, index) {
         const value = e.target.value
