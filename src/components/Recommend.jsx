@@ -1,22 +1,22 @@
 import { useState } from "react"
 import { toast } from "sonner"
+import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 import { bindReferrer, userInfo } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { accountStore } from "@/stores/accounts.js"
-import SplitInputCode from "@/components/SplitInputCode.jsx"
-import { useTranslation } from "react-i18next"
 import { userinfoStore } from "@/stores/userinfo.js"
+import SplitInputCode from "@/components/SplitInputCode.jsx"
 
 function Recommend({ trigger }) {
     const { setIsBindingRecommend } = accountStore()
-    const { setUserinfo } = userinfoStore()
+    const { userinfo, setUserinfo } = userinfoStore()
     const { t } = useTranslation()
     const [loading, setLoading] = useState(false)
 
     const [inviteCode, setInviteCode] = useState("")
 
-    async function handleBindingRecommend(e) {
-        e.stopPropagation()
+    async function handleBindingRecommend() {
         setLoading(true)
         const { success } = await bindReferrer(inviteCode)
         if (success) {
@@ -29,26 +29,28 @@ function Recommend({ trigger }) {
     }
 
     return (
-        <>
-            <Dialog>
-                <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]" onClick={e => e.stopPropagation()}>
-                    <DialogTitle className="text-white">{t("绑定推荐码")} <DialogDescription /></DialogTitle>
-                    <SplitInputCode onChange={e => setInviteCode(e)} />
-                    <DialogFooter>
-                        <Dialog>
-                            <DialogTrigger
-                                className="w-full h-12 bg-primary text-center rounded-lg"
-                                onClick={handleBindingRecommend} disabled={loading}
-                            >
-                                {t("确认绑定")}
-                            </DialogTrigger>
-                        </Dialog>
-                    </DialogFooter>
-                </DialogContent>
-                <DialogTrigger className="flex gap-2" onClick={e => e.stopPropagation()}> {trigger}</DialogTrigger>
-            </Dialog>
-
-        </>
+        <Dialog modal>
+            <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]" onClick={e => e.stopPropagation()}>
+                <DialogTitle className="text-white">{t("绑定推荐码")} <DialogDescription /></DialogTitle>
+                <SplitInputCode onChange={e => setInviteCode(e)} />
+                <DialogFooter>
+                    <Dialog modal>
+                        <DialogTrigger
+                            className="w-full h-12 bg-primary text-center rounded-lg"
+                            onClick={handleBindingRecommend} disabled={loading}
+                        >
+                            {t("确认绑定")}
+                        </DialogTrigger>
+                    </Dialog>
+                </DialogFooter>
+            </DialogContent>
+            <DialogTrigger
+                className={clsx("flex gap-2", userinfo?.hashReferer && "text-gray-500")} onClick={e => e.stopPropagation()}
+                disabled={userinfo?.hashReferer}
+            >
+                {trigger}
+            </DialogTrigger>
+        </Dialog>
     )
 }
 

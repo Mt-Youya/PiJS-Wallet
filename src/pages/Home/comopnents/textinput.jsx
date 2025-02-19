@@ -21,37 +21,40 @@ function TextInput() {
     const [isPaid, setIsPaid] = useState(userinfo?.isPaid)
     const [loading, setLoading] = useState(false)
     const [approval, setApproval] = useState(false)
+    const [open, setOpen] = useState(false)
 
-    async function handlePay(e) {
+    async function handlePay() {
         if (!userinfo) {
             setUserinfo(Session.get("userInfo"))
-            e.preventDefault()
+            setOpen(false)
             return toast.warning("请先连接钱包!")
         }
         setLoading(true)
         const { data: payInfo } = await paymentInfo()
 
-        if (payInfo) {
-            const { hash: txHash } = await SendTx(payInfo)
-            const { data: { message, success } = {} } = await submitPayment({
-                ...payInfo,
-                address: userinfo?.wallet,
-                txHash,
-            })
-            setApproval(success)
-            if (!success) return toast.error(message)
-            toast.success(message)
-            const timer = setInterval(async () => {
-                const { data } = await paymentStatus()
-                if (data?.completed) {
-                    toast.success("支付成功!")
-                    clearInterval(timer)
-                    setLoading(false)
-                    setIsPaid(true)
-                    fundConfig().then(({ data }) => setCellOptions(data))
-                }
-            }, 2000)
+        if (!payInfo) {
+            setOpen(false)
+            return toast.error("支付信息查询失败！")
         }
+        const { hash: txHash } = await SendTx(payInfo)
+        const { data: { message, success } = {} } = await submitPayment({
+            ...payInfo,
+            address: userinfo?.wallet,
+            txHash,
+        })
+        setApproval(success)
+        if (!success) return toast.error(message)
+        toast.success(message)
+        const timer = setInterval(async () => {
+            const { data } = await paymentStatus()
+            if (data?.completed) {
+                toast.success("支付成功!")
+                clearInterval(timer)
+                setLoading(false)
+                setIsPaid(true)
+                fundConfig().then(({ data }) => setCellOptions(data))
+            }
+        }, 2000)
     }
 
     async function SendTx(payInfo) {
@@ -70,16 +73,23 @@ function TextInput() {
         await approveTx.wait()
 
         const balance = await usdtContract.balanceOf(address)
-        if (balance < paymentAmount) return toast.error("USDT余额不足，请先充值")
+        if (balance < paymentAmount) {
+            setOpen(false)
+            return toast.error("USDT余额不足，请先充值")
+        }
 
         const allowance = await usdtContract.allowance(address, contractAddress)
-        if (allowance < paymentAmount) return toast.error("授权额度不足，请先授权")
+        if (allowance < paymentAmount) {
+            setOpen(false)
+            return toast.error("授权额度不足，请先授权")
+        }
 
         const paymentParams = [{ ...payInfo, amount: paymentAmount }]
 
         const payTx = await paymentContract.payWithUSDT(...paymentParams)
         return await payTx.wait()
     }
+
 
     return (
         <>
@@ -90,7 +100,7 @@ function TextInput() {
             </div>
             {
                 !isPaid ?
-                    <Dialog as="div" className="relative z-10 focus:outline-none">
+                    <Dialog as="div" className="relative z-10 focus:outline-none" open={open}>
                         <DialogTrigger
                             className="bg-primary p-3 rounded-xl w-[calc(100%-2rem)] m-auto block"
                             onClick={handlePay}

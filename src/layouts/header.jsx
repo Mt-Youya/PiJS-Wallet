@@ -141,8 +141,7 @@ function Header() {
                                     <span className="max-w-20 overflow-hidden text-ellipsis"> {address} </span>
                                     <img src="/assets/Dropdown.svg" alt="Dropdown" />
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
+                                <DropdownMenuContent className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
                                     <DropdownMenuItem>
                                         <Recommend trigger={(
                                             <>

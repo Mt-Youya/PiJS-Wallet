@@ -7,7 +7,7 @@ function SplitInputCode({ onChange, length = 6 }) {
     function handleChange(e, index) {
         const value = e.target.value
         const newCode = [...code]
-        newCode[index] = value
+        newCode[index] = value.toUpperCase()
 
         const inputs = iptsRef.current
 
