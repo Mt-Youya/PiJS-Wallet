@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Loader } from "lucide-react"
 import { toast } from "sonner"
+import { BrowserProvider, Contract } from "ethers"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { Button } from "@/ui/button.jsx"
 import { Textarea } from "@/ui/textarea.jsx"
@@ -10,7 +11,6 @@ import { cellFolderStore } from "@/stores/cellFolder.js"
 import { contractInfoStore } from "@/stores/contract.js"
 import { userinfoStore } from "@/stores/userinfo.js"
 import { USDTAbi, Abi } from "@/constants/contract.json"
-import { BrowserProvider, Contract } from "ethers"
 import { Session } from "@/utils/storage.js"
 
 function TextInput() {
@@ -18,10 +18,11 @@ function TextInput() {
     const { setCellOptions } = cellFolderStore()
     const { contractInfo } = contractInfoStore()
     const { t } = useTranslation()
-    const [isPaid, setIsPaid] = useState(userinfo?.isPaid)
     const [loading, setLoading] = useState(false)
     const [approval, setApproval] = useState(false)
     const [open, setOpen] = useState(false)
+
+    const isPaid = useMemo(() => userinfo?.isPaid, [userinfo?.isPaid])
 
     async function handlePay() {
         if (!userinfo) {
@@ -51,7 +52,7 @@ function TextInput() {
                 toast.success("支付成功!")
                 clearInterval(timer)
                 setLoading(false)
-                setIsPaid(true)
+                setUserinfo({ ...userinfo, isPaid: true })
                 fundConfig().then(({ data }) => setCellOptions(data))
             }
         }, 2000)

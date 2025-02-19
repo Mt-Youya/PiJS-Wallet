@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { BrowserProvider, formatEther, JsonRpcSigner } from "ethers"
@@ -10,7 +10,7 @@ import { contractInfoStore } from "@/stores/contract.js"
 import { incomeInfoStore } from "@/stores/income.js"
 import { accountStore } from "@/stores/accounts.js"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu.jsx"
-import { connectWallet, recomentIncome, userInfo } from "@/apis/auth.js"
+import { bindReferrer, connectWallet, recomentIncome, userInfo } from "@/apis/auth.js"
 import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
 import { Toaster } from "@/ui/toaster.jsx"
@@ -22,7 +22,7 @@ function Header() {
     const { userinfo, setUserinfo } = userinfoStore()
     const { setContractInfo } = contractInfoStore()
     const { setIncomeInfo } = incomeInfoStore()
-    const { setIsConnected } = accountStore()
+    const { setIsConnected, setIsBindingRecommend } = accountStore()
     const [expanded, setExpanded] = useState(false)
 
     const [switchLanguage, setSwitchLanguage] = useState(false)
@@ -42,6 +42,19 @@ function Header() {
     const { connect, isSuccess } = useAppKitWallet({
         onSuccess: parse => setParsedCaiAddress(parse),
     })
+
+    const addressDiff = useRef(address)
+    useEffect(() => {
+        (async function() {
+            if (address === "" || address === void 0) return
+            if (address !== addressDiff.current) {
+                await getUserinfo()
+                // location.reload()
+            }
+            addressDiff.current = address
+        })()
+
+    }, [address])
 
     async function createContract() {
         const { address, chainId } = parsedCaiAddress
@@ -97,7 +110,7 @@ function Header() {
 
     async function getUserinfo() {
         const { data } = await userInfo()
-        setUserinfo(data)
+        data && setUserinfo(data)
     }
 
     const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]
@@ -119,6 +132,8 @@ function Header() {
             if (result) break
         }
         setLoading(false)
+        console.log("code", code)
+        code && getUserBinding()
     }
 
     async function handleExit() {
@@ -136,12 +151,23 @@ function Header() {
         return string.slice(0, long) + "..." + string.slice(string.length - long, string.length)
     }
 
-    function handleRecommendClick(e) {
-        if (userinfo?.hasReferrer) {
-            e.preventDefault()
-            toast.warning("您已经绑定上级!")
+    const url = new URLSearchParams(location.search)
+    const code = url.get("inviteCode")
+
+    async function getUserBinding(args) {
+        console.log("wallet changed", args)
+        if (!userinfo) return console.log("!userinfo getUserBinding", userinfo)
+        const { success, data: { message } } = await bindReferrer(code)
+        if (success) {
+            setIsBindingRecommend(true)
+            await getUserinfo()
         }
+        toast[success ? "success" : "error"](message)
     }
+
+    useEffect(() => {
+        window.ethereum?.on?.("accountsChanged", getUserBinding)
+    }, [])
 
     return (
         <>
@@ -157,7 +183,7 @@ function Header() {
                                 <img src="/assets/Dropdown.svg" alt="Dropdown" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
-                                <DropdownMenuItem onClick={handleRecommendClick}>
+                                <DropdownMenuItem>
                                     <Recommend trigger={(
                                         <>
                                             <img className="w-6 h-4.5" src="/assets/Binding.svg"

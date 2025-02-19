@@ -28,14 +28,16 @@ function Recommend({ trigger }) {
     }
 
     async function handleBinding(paramsCode) {
+        if (!userinfo) return console.log("!userinfo handleBinding")
         setLoading(true)
-        const { success } = await bindReferrer(paramsCode)
+        const { success, data: { message } } = await bindReferrer(paramsCode)
         if (success) {
-            toast.success("绑定成功!")
             setIsBindingRecommend(true)
             const { data: info } = await userInfo()
             setUserinfo(info)
+            setInviteCode("")
         }
+        toast[success ? "success" : "error"](message)
         setLoading(false)
     }
 
@@ -45,7 +47,7 @@ function Recommend({ trigger }) {
         handleBinding(code)
     }, [])
 
-    const hasInviteCode = useMemo(() => userinfo?.hashReferer || inviteCode, [userinfo?.hashReferer, inviteCode])
+    const hasInviteCode = useMemo(() => !!(!userinfo?.hasReferrer || inviteCode), [inviteCode, userinfo?.hasReferrer])
 
     return (
         <Dialog modal>
@@ -64,7 +66,8 @@ function Recommend({ trigger }) {
                 </DialogFooter>
             </DialogContent>
             <DialogTrigger
-                className={clsx("flex gap-2", hasInviteCode && "text-gray-500")} onClick={e => e.stopPropagation()}
+                className={clsx("flex gap-2", hasInviteCode && "text-gray-500")}
+                onClick={e => e.stopPropagation() && (hasInviteCode && e.preventDefault())}
                 disabled={hasInviteCode}
             >
                 {trigger}
