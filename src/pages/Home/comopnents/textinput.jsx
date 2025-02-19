@@ -48,7 +48,7 @@ function TextInput() {
                     clearInterval(timer)
                     setLoading(false)
                     setIsPaid(true)
-                    fundConfig().then(({ data }) => setCellOptions({ cellOptions: data }))
+                    fundConfig().then(({ data }) => setCellOptions(data))
                 }
             }, 2000)
         }
