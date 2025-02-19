@@ -21,8 +21,8 @@ function Rights() {
     }, [userinfo])
 
     const columns = [
-        { dataIndex: "walletAddress", title: "Address" },
-        { dataIndex: "payAmount", title: "Contribution Rewards" },
+        { dataIndex: "walletAddress", title: t("地址") },
+        { dataIndex: "payAmount", title: t("推荐奖励") },
     ]
 
     const [dataSource, setDataSource] = useState([])

@@ -12,21 +12,21 @@ import {
 
 function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10, total: 0, current: 1 } }) {
     const [pageOptions, setPageOptions] = useState(pagination)
-    const pageLen = useMemo(() => Math.ceil(pageOptions?.total / pageOptions?.pageSize), [pageOptions])
+    const pageLen = useMemo(() => Math.ceil(pageOptions?.total / pageOptions?.pageSize), [pageOptions?.total, pageOptions?.pageSize])
     const data = useMemo(() => {
         const nowPage = pageOptions?.current - 1
         return dataSource.slice(nowPage * 10, (nowPage + 1) * 10)
-    }, [dataSource, pageOptions])
+    }, [dataSource, pageOptions?.current])
 
     const pageSplit = 4
-    const pageNumberList = useMemo(() => Array.from({ length: pageLen > pageSplit ? pageSplit : pageLen }, (_, i) => i + 1), [pageSplit, pageLen])
+    const pageNumberList = useMemo(() => Array.from({ length: pageLen > pageSplit ? pageSplit : pageLen }, (_, i) => i + 1), [pageLen])
 
     return (
         <>
             <Table className="text-black">
                 <TableHeader>
                     <TableRow className="bg-[#C2C2C2] text-center">
-                        <TableHead key="index">Number</TableHead>
+                        <TableHead key="index">{t("序号")}</TableHead>
                         {columns.map((column, index) => (
                             <TableHead className="px-2" key={column.dataIndex + index}> {column.title} </TableHead>
                         ))}
