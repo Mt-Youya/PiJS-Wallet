@@ -9,7 +9,7 @@ import { cellFolderStore } from "@/stores/cellFolder.js"
 import { contractInfoStore } from "@/stores/contract.js"
 import { userinfoStore } from "@/stores/userinfo.js"
 import { USDTAbi, Abi } from "@/constants/contract.json"
-import { BrowserProvider, Contract, JsonRpcSigner, parseUnits } from "ethers"
+import { BrowserProvider, Contract } from "ethers"
 import { Session } from "@/utils/storage.js"
 import Loading from "@/components/Loading.jsx"
 
@@ -54,7 +54,6 @@ function TextInput() {
         }
     }
 
-
     async function SendTx(payInfo) {
         const usdtContractAddress = "0xa409A8e7dC971f0a2c8f311330276599E1227E8A"
         const contractAddress = "0xF373D5465a1B4e7DEaDcd24211ad05d92aCC28D9"
@@ -92,8 +91,10 @@ function TextInput() {
             {
                 !isPaid ?
                     <Dialog as="div" className="relative z-10 focus:outline-none">
-                        <DialogTrigger className="bg-primary p-3 rounded-xl w-[calc(100%-2rem)] m-auto block"
-                                       onClick={handlePay}>
+                        <DialogTrigger
+                            className="bg-primary p-3 rounded-xl w-[calc(100%-2rem)] m-auto block"
+                            onClick={handlePay}
+                        >
                             {t("支付100USDT参与活动")}
                         </DialogTrigger>
                         <DialogContent

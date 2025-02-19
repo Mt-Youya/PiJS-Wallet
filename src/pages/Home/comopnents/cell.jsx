@@ -9,10 +9,10 @@ function Cell() {
     const { cellOptions: options, setCellOptions } = cellFolderStore()
 
     async function getOptions() {
-        fundConfig().then(({ data }) => setCellOptions({ cellOptions: data }))
+        fundConfig().then(({ data }) => setCellOptions(data))
     }
 
-    const sellRate = useMemo(() => (options?.used / options?.total * 100).toFixed(2), [options])
+    const sellRate = useMemo(() => (options?.used / options?.total * 100).toFixed(2), [options?.used, options?.total])
 
     useEffect(() => {
         getOptions()
