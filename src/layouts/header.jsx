@@ -19,7 +19,7 @@ import Recommend from "@/components/Recommend.jsx"
 function Header() {
     const { i18n, t } = useTranslation()
     const { setLang } = langStore()
-    const { setUserinfo } = userinfoStore()
+    const { userinfo, setUserinfo } = userinfoStore()
     const { setContractInfo } = contractInfoStore()
     const { setIncomeInfo } = incomeInfoStore()
     const { setIsConnected } = accountStore()
@@ -91,6 +91,10 @@ function Header() {
         createSignature()
     }, [isSuccess, walletProvider, parsedCaiAddress])
 
+    useEffect(() => {
+        userinfo && setIsConnected(true)
+    }, [userinfo])
+
     async function getUserinfo() {
         const { data } = await userInfo()
         setUserinfo(data)
@@ -127,42 +131,44 @@ function Header() {
         Local.clear()
     }
 
+    function ellipsisMiddle(string, long = 4) {
+        return string.slice(0, long) + "..." + string.slice(string.length - long, string.length)
+    }
+
     return (
         <>
             <Toaster />
             <header className="text-sm flex space-b w-full justify-between">
                 <img className="h-9" src="/assets/Logo.svg" alt="Logo" />
                 <nav className="flex gap-2 justify-between items-center">
-                    {
-                        isConnected ? (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex gap-2 border-solid-grey p-2 text-[#ABB1B9]">
-                                    <img className="w-4 h-4 aspect-square" src="/assets/Avatar.svg" alt="Expand" />
-                                    <span className="max-w-20 overflow-hidden text-ellipsis"> {address} </span>
-                                    <img src="/assets/Dropdown.svg" alt="Dropdown" />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
-                                    <DropdownMenuItem>
-                                        <Recommend trigger={(
-                                            <>
-                                                <img className="w-6 h-4.5" src="/assets/Binding.svg"
-                                                     alt="Binding" />
-                                                <span>{t("绑定推荐码")}</span>
-                                            </>
-                                        )} />
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={handleExit}>
-                                        <img className="w-6 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" />
-                                        {t("断开连接")}
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        ) : (
-                            <Button className="bg-[#F4C134] py-2 px-4 rounded-lg" onClick={handleConnect}>
-                                {loading ? "connect ..." : !isConnected && t("连接钱包")}
-                            </Button>
-                        )
-                    }
+                    {isConnected ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="flex gap-2 border-solid-grey p-2 text-[#ABB1B9]">
+                                <img className="w-4 h-4 aspect-square" src="/assets/Avatar.svg" alt="Expand" />
+                                <span className="max-w-20 overflow-hidden text-ellipsis"> {ellipsisMiddle(address)} </span>
+                                <img src="/assets/Dropdown.svg" alt="Dropdown" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
+                                <DropdownMenuItem>
+                                    <Recommend trigger={(
+                                        <>
+                                            <img className="w-6 h-4.5" src="/assets/Binding.svg"
+                                                 alt="Binding" />
+                                            <span>{t("绑定推荐码")}</span>
+                                        </>
+                                    )} />
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleExit}>
+                                    <img className="w-6 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" />
+                                    {t("断开连接")}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <Button className="bg-[#F4C134] py-2 px-4 rounded-lg" onClick={handleConnect}>
+                            {loading ? "connect ..." : !isConnected && t("连接钱包")}
+                        </Button>
+                    )}
                     <img src="/assets/Expand.svg" alt="Expand" onClick={() => setExpanded(prev => !prev)} />
                 </nav>
             </header>

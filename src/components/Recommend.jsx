@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { clsx } from "clsx"
 import { useTranslation } from "react-i18next"
@@ -28,11 +28,18 @@ function Recommend({ trigger }) {
         setLoading(false)
     }
 
+    useEffect(() => {
+        const url = new URLSearchParams(location.search)
+        setInviteCode(url.get("inviteCode"))
+    }, [])
+
+    const hasInviteCode = useMemo(() => userinfo?.hashReferer || inviteCode, [userinfo?.hashReferer, inviteCode])
+
     return (
         <Dialog modal>
             <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]" onClick={e => e.stopPropagation()}>
                 <DialogTitle className="text-white">{t("绑定推荐码")} <DialogDescription /></DialogTitle>
-                <SplitInputCode onChange={e => setInviteCode(e)} />
+                <SplitInputCode comInCode={inviteCode} onChange={e => setInviteCode(e)} />
                 <DialogFooter>
                     <Dialog modal>
                         <DialogTrigger
@@ -45,8 +52,8 @@ function Recommend({ trigger }) {
                 </DialogFooter>
             </DialogContent>
             <DialogTrigger
-                className={clsx("flex gap-2", userinfo?.hashReferer && "text-gray-500")} onClick={e => e.stopPropagation()}
-                disabled={userinfo?.hashReferer}
+                className={clsx("flex gap-2", hasInviteCode && "text-gray-500")} onClick={e => e.stopPropagation()}
+                disabled={hasInviteCode}
             >
                 {trigger}
             </DialogTrigger>

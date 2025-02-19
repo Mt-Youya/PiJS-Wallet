@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { Input } from "@/ui/input.jsx"
 
-function SplitInputCode({ onChange, length = 6 }) {
-    const [code, setCode] = useState(Array(length).fill(""))
+function SplitInputCode({ comInCode = "", onChange, length = 6 }) {
+    const [code, setCode] = useState(comInCode?.split("") ?? Array(length).fill(""))
 
     function handleChange(e, index) {
         const value = e.target.value
@@ -18,7 +18,13 @@ function SplitInputCode({ onChange, length = 6 }) {
     }
 
     function handleKeyDown(e, index) {
-        if (e.key === "Backspace" && !code[index] && index > 0) {
+        if (e.key === "Backspace" || e.key === "Delete") {
+            const newCode = [...code]
+            newCode[index] = ""
+            setCode(newCode)
+            if (code[index]) {
+                return
+            }
             return iptsRef.current[index - 1].focus()
         }
         if (e.key === "ArrowLeft") {
@@ -27,13 +33,24 @@ function SplitInputCode({ onChange, length = 6 }) {
             return iptsRef.current[index < length - 1 && index + 1].focus()
         }
 
-        if (!/^[a-zA-Z0-9]$/.test(e.key)) return
-        if (code[index]) {
-            const newCode = [...code]
-            newCode[index] = e.key
-            setCode(newCode)
+        if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+            return e.preventDefault()
         }
     }
+
+    function handlePaste(event) {
+        const value = event.target.value
+        if (!value) event.preventDefault()
+        const paste = (event.clipboardData || window.clipboardData).getData("text")
+        const reg = /[a-zA-Z0-9]/g
+        const str = paste.match(reg).slice(0, 6)
+        const diff = 6 - str.length
+        if (diff > 0) {
+            new Array(diff).fill("").forEach(s => str.push(s))
+        }
+        setCode(str)
+    }
+
 
     useEffect(() => {
         onChange?.(code.join(""))
@@ -50,9 +67,10 @@ function SplitInputCode({ onChange, length = 6 }) {
                         id={`input-${index}`}
                         type="text"
                         maxLength={1}
-                        value={digit}
+                        value={digit.toUpperCase()}
                         onChange={(e) => handleChange(e, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
+                        onPaste={e => handlePaste(e)}
                         className="w-12 h-12 text-xl text-center text-white border-solid-grey outline-0 focus:ring-blue-500"
                     />
                 ))}

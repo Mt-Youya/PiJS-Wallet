@@ -90,7 +90,6 @@ function TextInput() {
         return await payTx.wait()
     }
 
-
     return (
         <>
             <h2 className="text-white text-xl my-4 block">{t("PIJSwap 全球节点合伙人")}</h2>

@@ -21,7 +21,7 @@ function Cell() {
         <>
             <div className="rounded-xl bg-[#181A20] border-solid-grey text-white mt-4 mb-1">
                 <div className="p-3">
-                    <SplitNumberSquare number={options?.used} />
+                    <SplitNumberSquare code={options?.used} />
                     <span className="text-white text-right block mt-3">{t("已售卖")}</span>
                 </div>
                 <div className="rounded-full w-full h-2 bg-[#2A2C30] overflow-hidden">

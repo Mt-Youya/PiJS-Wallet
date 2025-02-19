@@ -12,17 +12,16 @@ import TablePage from "@/components/TablePage.jsx"
 
 function Rights() {
     const { isConnected } = accountStore()
-    const { userinfo, setUserinfo } = userinfoStore()
+    const { userinfo } = userinfoStore()
     const { incomeInfo, setIncomeInfo } = incomeInfoStore()
-    const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo?.inviteCode])
 
     useEffect(() => {
         userinfo && recomentIncome().then(({ data }) => setIncomeInfo(data?.totalIncome || 0))
     }, [userinfo])
 
     const columns = [
-        { dataIndex: "walletAddress", title: t("地址") },
-        { dataIndex: "payAmount", title: t("推荐奖励") },
+        { dataIndex: "returnWallet", title: t("地址") },
+        { dataIndex: "returnAmount", title: t("推荐奖励") },
     ]
 
     const [dataSource, setDataSource] = useState([])
@@ -52,12 +51,7 @@ function Rights() {
         handlePageChange({ pageNum: pagination.current, pageSize: pagination.pageSize })
     }, [])
 
-    const inviteLink = useMemo(() => `${location.origin}/?inviteCode=${inviteCode}`, [inviteCode])
-
-    useEffect(() => {
-        const url = new URLSearchParams(location.search)
-        setUserinfo({ ...userinfo, inviteCode: url.get("inviteCode") })
-    }, [])
+    const inviteLink = useMemo(() => `${location.origin}/?inviteCode=${userinfo?.inviteCode}`, [userinfo?.inviteCode])
 
     return (
         <>
@@ -73,12 +67,12 @@ function Rights() {
                 <li>{t("优先访问：未来生态系统项目")}</li>
                 <li>{t("LP质押提现：取消上述权利")}</li>
             </ul>
-            {!isConnected ? (
+            {isConnected ? (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">
-                            <span>{t("推荐奖励")}</span>
-                            <span className="flex gap-2">{t("我的推荐代码")}<Copy code={inviteCode} /> </span>
+                            <span>{t("推荐奖励")}  </span>
+                            <span className="flex gap-2">{t("我的推荐代码")}<Copy code={userinfo?.inviteCode ?? ""} /> </span>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-0 mt-4">
@@ -100,7 +94,7 @@ function Rights() {
                                 </Dialog>
                                 <img src="/assets/DirectionRight.svg" alt="DirectionRight" />
                             </span>
-                            <SplitNumberSquare number={inviteCode} size="small" />
+                            <SplitNumberSquare code={userinfo?.inviteCode} size="small" />
                         </div>
                         <p>Invitation to 50 NFTs</p>
                         <br />

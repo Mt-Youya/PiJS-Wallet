@@ -27,10 +27,10 @@ function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10,
         <>
             <Table className="text-black">
                 <TableHeader>
-                    <TableRow className="bg-[#C2C2C2] text-center">
-                        <TableHead key="index">{t("序号")}</TableHead>
+                    <TableRow className="bg-[#C2C2C2]">
+                        <TableHead key="index" className="min-w-10 text-center">{t("序号")}</TableHead>
                         {columns.map((column, index) => (
-                            <TableHead className="px-2" key={column.dataIndex + index}> {column.title} </TableHead>
+                            <TableHead className="px-2 text-center" key={column.dataIndex + index}> {column.title} </TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>
