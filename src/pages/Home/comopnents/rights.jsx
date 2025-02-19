@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import { t } from "i18next"
 import { recomentIncome } from "@/apis/auth.js"
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card.jsx"
@@ -55,7 +55,7 @@ function Rights() {
                                 Referral Link：<br />
                                 https://abc.abc.com/inviteCode=?{inviteCode}
                             </a>
-                            <span><Copy code={inviteCode} /></span>
+                            <span><Copy code={`https://abc.abc.com/inviteCode=?${inviteCode}`} /></span>
                         </div>
                         <br />
                         <p>分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！</p>
