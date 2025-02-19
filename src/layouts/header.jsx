@@ -14,6 +14,7 @@ import { connectWallet, recomentIncome, userInfo } from "@/apis/auth.js"
 import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
 import { Toaster } from "@/ui/toaster.jsx"
+import Recommend from "@/components/Recommend.jsx"
 
 function Header() {
     const { i18n, t } = useTranslation()
@@ -143,11 +144,13 @@ function Header() {
                                 <DropdownMenuContent
                                     className="bg-[#191E22] rounded-xl px-4 py-5 w-42 text-white border-none">
                                     <DropdownMenuItem>
-                                        <>
-                                            <img className="w-6 h-4.5" src="/assets/Binding.svg"
-                                                 alt="Binding" />
-                                            <span>绑定推荐码</span>
-                                        </>
+                                        <Recommend trigger={(
+                                            <>
+                                                <img className="w-6 h-4.5" src="/assets/Binding.svg"
+                                                     alt="Binding" />
+                                                <span>绑定推荐码</span>
+                                            </>
+                                        )} />
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={handleExit}>
                                         <img className="w-6 h-5 aspect-square" src="/assets/Exit.svg" alt="Exit" />
