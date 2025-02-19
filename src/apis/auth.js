@@ -81,10 +81,11 @@ export function recomentIncome() {
     })
 }
 
-export function recomentList() {
+export function rewardRank(data) {
     return request({
-        url: "/api/invite/recomentList",
+        url: "/api/invite/rewardRank",
         method: METHOD.POST,
+        data
     })
 }
 

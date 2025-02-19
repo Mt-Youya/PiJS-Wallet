@@ -1,16 +1,17 @@
 import { useState } from "react"
 import { toast } from "sonner"
-import { bindReferrer } from "@/apis/auth.js"
+import { bindReferrer, userInfo } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { accountStore } from "@/stores/accounts.js"
 import SplitInputCode from "@/components/SplitInputCode.jsx"
 import { useTranslation } from "react-i18next"
+import { userinfoStore } from "@/stores/userinfo.js"
 
 function Recommend({ trigger }) {
     const { setIsBindingRecommend } = accountStore()
+    const { setUserinfo } = userinfoStore()
     const { t } = useTranslation()
     const [loading, setLoading] = useState(false)
-
 
     const [inviteCode, setInviteCode] = useState("")
 
@@ -21,6 +22,8 @@ function Recommend({ trigger }) {
         if (success) {
             toast.success("绑定成功!")
             setIsBindingRecommend(true)
+            const info = await userInfo()
+            setUserinfo(info)
         }
         setLoading(false)
     }

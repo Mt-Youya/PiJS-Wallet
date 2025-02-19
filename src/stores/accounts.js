@@ -2,13 +2,13 @@ import { create } from "zustand"
 
 export const accountStore = create(set => ({
     isLogin: false,
-    setIsLogin: isLogin => set(state => ({ isLogin })),
+    setIsLogin: isLogin => set(() => ({ isLogin })),
     isBinding: false,
-    setIsBinding: isBinding => set(state => ({ isBinding })),
+    setIsBinding: isBinding => set(() => ({ isBinding })),
     isSimu: false,
-    setIsSimu: isSimu => set(state => ({ isSimu })),
+    setIsSimu: isSimu => set(() => ({ isSimu })),
     isBindingRecommend: false,
-    setIsBindingRecommend: () => set(state => ({ isBindingRecommend: !state.isBindingRecommend })),
+    setIsBindingRecommend: isBindingRecommend => set(() => ({ isBindingRecommend })),
     isConnected: false,
-    setIsConnected: isConnected => set(state => ({ isConnected })),
+    setIsConnected: isConnected => set(() => ({ isConnected })),
 }))

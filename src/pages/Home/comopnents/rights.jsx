@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { t } from "i18next"
-import { recomentIncome, recomentList } from "@/apis/auth.js"
+import { recomentIncome, rewardRank } from "@/apis/auth.js"
 import { accountStore } from "@/stores/accounts.js"
 import { userinfoStore } from "@/stores/userinfo.js"
 import { incomeInfoStore } from "@/stores/income.js"
@@ -27,14 +27,29 @@ function Rights() {
 
     const [dataSource, setDataSource] = useState([])
 
-    const [pagination, setPagination] = useState({
+    const pageParams = {
         current: 1,
         pageSize: 10,
         total: dataSource.length,
-    })
+        get pageLen() {
+            return Math.ceil(dataSource.length / this.pageSize)
+        },
+    }
+    const [pagination, setPagination] = useState(pageParams)
+
+    async function handlePageChange(params) {
+        const { data } = await rewardRank(params)
+        setDataSource(data?.list)
+        setPagination({
+            total: data?.total,
+            pageSize: data?.pageSize,
+            current: data?.pageNum,
+            pageLen: data?.pages,
+        })
+    }
 
     useEffect(() => {
-        recomentList().then(({ data }) => setDataSource(data))
+        handlePageChange({ pageNum: pagination.current, pageSize: pagination.pageSize })
     }, [])
 
     const inviteLink = useMemo(() => `https://abc.abc.com/inviteCode=?${inviteCode}`, [inviteCode])
@@ -69,7 +84,10 @@ function Rights() {
                                         <DialogTitle className="text-white text-center">
                                             {t("推荐榜单")} <DialogDescription />
                                         </DialogTitle>
-                                        <TablePage columns={columns} dataSource={dataSource} pagination={pagination} />
+                                        <TablePage
+                                            columns={columns} dataSource={dataSource} pagination={pagination}
+                                            onChange={handlePageChange}
+                                        />
                                     </DialogContent>
                                     <DialogTrigger>
                                         <b className="font-bold text-xl"> {incomeInfo}</b> USDT

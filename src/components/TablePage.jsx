@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table.jsx"
 import {
     Pagination,
@@ -10,16 +11,17 @@ import {
     PaginationPrevious,
 } from "@/ui/pagination.jsx"
 
-function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10, total: 0, current: 1 } }) {
+function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10, total: 0, current: 1, pageLen: 1 }, onChange }) {
+    const { t } = useTranslation()
     const [pageOptions, setPageOptions] = useState(pagination)
     const pageLen = useMemo(() => Math.ceil(pageOptions?.total / pageOptions?.pageSize), [pageOptions?.total, pageOptions?.pageSize])
-    const data = useMemo(() => {
-        const nowPage = pageOptions?.current - 1
-        return dataSource.slice(nowPage * 10, (nowPage + 1) * 10)
-    }, [dataSource, pageOptions?.current])
 
     const pageSplit = 4
     const pageNumberList = useMemo(() => Array.from({ length: pageLen > pageSplit ? pageSplit : pageLen }, (_, i) => i + 1), [pageLen])
+
+    useEffect(() => {
+        onChange({ pageNum: pageOptions.current, pageSize: pageOptions.pageSize })
+    }, [pageOptions?.current])
 
     return (
         <>
@@ -33,7 +35,7 @@ function TablePage({ dataSource = [], columns = [], pagination = { pageSize: 10,
                     </TableRow>
                 </TableHeader>
                 <TableBody className="text-center">
-                    {data.map((row, rowIndex) => (
+                    {dataSource.map((row, rowIndex) => (
                         <TableRow key={rowIndex + 1}>
                             <TableCell className="px-2" key={`${rowIndex}-`}> {rowIndex + 1} </TableCell>
                             {columns.map((column, colIndex) => (
