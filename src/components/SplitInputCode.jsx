@@ -42,7 +42,7 @@ function SplitInputCode({ onChange, length = 6 }) {
     const iptsRef = useRef([])
     return (
         <div className="flex space-x-2">
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 justify-center">
                 {code.map((digit, index) => (
                     <Input
                         key={index}
