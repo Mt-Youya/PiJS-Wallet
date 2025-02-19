@@ -38,7 +38,7 @@ function Rights() {
 
     async function handlePageChange(params) {
         const { data } = await rewardRank(params)
-        setDataSource(data?.list)
+        setDataSource(data?.list.map(item => ({ ...item, returnAmount: item.returnAmount + "$" })))
         setPagination({
             total: data?.total,
             pageSize: data?.pageSize,
