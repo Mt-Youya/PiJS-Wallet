@@ -136,6 +136,13 @@ function Header() {
         return string.slice(0, long) + "..." + string.slice(string.length - long, string.length)
     }
 
+    function handleRecommendClick(e) {
+        if (userinfo?.hasReferrer) {
+            e.preventDefault()
+            toast.warning("您已经绑定上级!")
+        }
+    }
+
     return (
         <>
             <Toaster />
@@ -150,7 +157,7 @@ function Header() {
                                 <img src="/assets/Dropdown.svg" alt="Dropdown" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleRecommendClick}>
                                     <Recommend trigger={(
                                         <>
                                             <img className="w-6 h-4.5" src="/assets/Binding.svg"

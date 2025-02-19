@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { clsx } from "clsx"
+import { Loader } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { bindReferrer, userInfo } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
@@ -9,6 +10,8 @@ import { userinfoStore } from "@/stores/userinfo.js"
 import SplitInputCode from "@/components/SplitInputCode.jsx"
 
 function Recommend({ trigger }) {
+    const url = new URLSearchParams(location.search)
+    const code = url.get("inviteCode")
     const { setIsBindingRecommend } = accountStore()
     const { userinfo, setUserinfo } = userinfoStore()
     const { t } = useTranslation()
@@ -16,21 +19,31 @@ function Recommend({ trigger }) {
 
     const [inviteCode, setInviteCode] = useState("")
 
-    async function handleBindingRecommend() {
-        setLoading(true)
-        const { success } = await bindReferrer(inviteCode)
-        if (success) {
-            toast.success("绑定成功!")
-            setIsBindingRecommend(true)
-            const info = await userInfo()
-            setUserinfo(info)
+    async function handleBindingRecommend(e) {
+        if (code) {
+            toast.warning("您已经绑定上级!")
+            return e.preventDefault()
         }
+
+        setLoading(true)
+        await handleBinding(inviteCode)
         setLoading(false)
     }
 
+    async function handleBinding(paramsCode) {
+        const { success } = await bindReferrer(paramsCode)
+        if (success) {
+            toast.success("绑定成功!")
+            setIsBindingRecommend(true)
+            const { data: info } = await userInfo()
+            setUserinfo(info)
+        }
+    }
+
     useEffect(() => {
-        const url = new URLSearchParams(location.search)
-        setInviteCode(url.get("inviteCode"))
+        if (!code) return
+        setInviteCode(code)
+        handleBinding(code)
     }, [])
 
     const hasInviteCode = useMemo(() => userinfo?.hashReferer || inviteCode, [userinfo?.hashReferer, inviteCode])
@@ -43,10 +56,10 @@ function Recommend({ trigger }) {
                 <DialogFooter>
                     <Dialog modal>
                         <DialogTrigger
-                            className="w-full h-12 bg-primary text-center rounded-lg"
+                            className="w-full h-12 bg-primary text-center rounded-lg flex justify-center gap-2 items-center"
                             onClick={handleBindingRecommend} disabled={loading}
                         >
-                            {t("确认绑定")}
+                            {loading && <Loader className="animate-spin" />} {t("确认绑定")}
                         </DialogTrigger>
                     </Dialog>
                 </DialogFooter>
