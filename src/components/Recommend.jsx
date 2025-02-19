@@ -24,13 +24,11 @@ function Recommend({ trigger }) {
             toast.warning("您已经绑定上级!")
             return e.preventDefault()
         }
-
-        setLoading(true)
-        await handleBinding(inviteCode)
-        setLoading(false)
+        handleBinding(inviteCode)
     }
 
     async function handleBinding(paramsCode) {
+        setLoading(true)
         const { success } = await bindReferrer(paramsCode)
         if (success) {
             toast.success("绑定成功!")
@@ -38,6 +36,7 @@ function Recommend({ trigger }) {
             const { data: info } = await userInfo()
             setUserinfo(info)
         }
+        setLoading(false)
     }
 
     useEffect(() => {
