@@ -5,7 +5,7 @@ import { accountStore } from "@/stores/accounts.js"
 import { userinfoStore } from "@/stores/userinfo.js"
 import { incomeInfoStore } from "@/stores/income.js"
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card.jsx"
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/ui/dialog.jsx"
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 import Copy from "@/components/Copy.jsx"
 import TablePage from "@/components/TablePage.jsx"
@@ -36,6 +36,7 @@ function Rights() {
     useEffect(() => {
         recomentList().then(({ data }) => setDataSource(data))
     }, [])
+
     return (
         <>
             <div className="flex my-5">
@@ -50,7 +51,8 @@ function Rights() {
                 <li>{t("优先访问：未来生态系统项目")}</li>
                 <li>{t("LP质押提现：取消上述权利")}</li>
             </ul>
-            {isConnected ? (<Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
+            {isConnected ? (
+                <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">
                             <span>推荐奖励</span>
@@ -67,7 +69,9 @@ function Rights() {
                                         </DialogTitle>
                                         <TablePage columns={columns} dataSource={dataSource} pagination={pagination} />
                                     </DialogContent>
-                                <b className="font-bold text-xl"> {incomeInfo}</b> USDT
+                                    <DialogTrigger>
+                                        <b className="font-bold text-xl"> {incomeInfo}</b> USDT
+                                    </DialogTrigger>
                                 </Dialog>
                                 <img src="/assets/DirectionRight.svg" alt="DirectionRight" />
                             </span>
