@@ -6,8 +6,6 @@ import Bar from "./comopnents/bar.jsx"
 import Textarea from "./comopnents/textinput.jsx"
 import Cell from "./comopnents/cell.jsx"
 import Rights from "./comopnents/rights.jsx"
-import Binding from "@/components/Binding.jsx"
-import Exchange from "@/components/Exchange.jsx"
 
 function Home() {
     const { t } = useTranslation()
@@ -18,10 +16,9 @@ function Home() {
             <Bar />
             <ProductCard
                 title={t("我的JS")} dollar={userinfo?.points} description={t("PIJSwap账号绑定")}
-                modalContent={<Binding />}
             />
             <ProductCard
-                title={t("我的PIJS")} dollar={userinfo?.pijsPoints} modalContent={<Exchange />}
+                title={t("我的PIJS")} dollar={userinfo?.pijsPoints}
                 description={<span>{t("绑定PIJSwap账号")}<br />{t("使用账号内JS兑换PIJS")}</span>}
                 footer={(
                     <div className="text-right pt-2">

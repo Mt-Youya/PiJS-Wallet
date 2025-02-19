@@ -18,8 +18,6 @@ function ProductCard({ title, dollar, description, footer, modalContent }) {
                                 {modalContent}
                             </DialogContent>
                             <a className="text-[#9C6BE5]">{t("即将开放")} {">>"} </a>
-                            {/*<DialogTrigger>*/}
-                            {/*</DialogTrigger>*/}
                         </Dialog>
                     </div>
                 </div>

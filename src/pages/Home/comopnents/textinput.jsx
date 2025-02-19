@@ -56,7 +56,7 @@ function TextInput() {
 
     async function SendTx(payInfo) {
         const usdtContractAddress = "0xa409A8e7dC971f0a2c8f311330276599E1227E8A"
-        const contractAddress = "0xF373D5465a1B4e7DEaDcd24211ad05d92aCC28D9"
+        const { contractAddress } = payInfo
 
         const { address } = contractInfo ?? {}
         const provider = new BrowserProvider(window.ethereum)

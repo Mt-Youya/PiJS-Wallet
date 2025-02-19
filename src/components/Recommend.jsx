@@ -1,30 +1,14 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
-import { bindReferrer, recomentList } from "@/apis/auth.js"
+import { bindReferrer } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { accountStore } from "@/stores/accounts.js"
-import TablePage from "@/components/TablePage.jsx"
 import SplitInputCode from "@/components/SplitInputCode.jsx"
 
 function Recommend({ trigger }) {
     const { setIsBindingRecommend } = accountStore()
     const [loading, setLoading] = useState(false)
-    const columns = [
-        { dataIndex: "walletAddress", title: "Address" },
-        { dataIndex: "payAmount", title: "Contribution Rewards" },
-    ]
 
-    const [dataSource, setDataSource] = useState([])
-
-    useEffect(() => {
-        recomentList().then(({ data }) => setDataSource(data))
-    }, [])
-
-    const [pagination, setPagination] = useState({
-        current: 1,
-        pageSize: 10,
-        total: dataSource.length,
-    })
 
     const [inviteCode, setInviteCode] = useState("")
 
@@ -47,16 +31,12 @@ function Recommend({ trigger }) {
                     <SplitInputCode onChange={e => setInviteCode(e)} />
                     <DialogFooter>
                         <Dialog>
-                            <DialogTrigger className="w-full h-12 bg-primary text-center rounded-lg" onClick={handleBindingRecommend}
-                                           disabled={loading}>
+                            <DialogTrigger
+                                className="w-full h-12 bg-primary text-center rounded-lg"
+                                onClick={handleBindingRecommend} disabled={loading}
+                            >
                                 确认绑定
                             </DialogTrigger>
-                            <DialogContent className="border-[#685319] w-11/12 rounded-lg">
-                                <DialogTitle className="text-white text-center">
-                                    推荐榜单 <DialogDescription />
-                                </DialogTitle>
-                                <TablePage columns={columns} dataSource={dataSource} pagination={pagination} />
-                            </DialogContent>
                         </Dialog>
                     </DialogFooter>
                 </DialogContent>
