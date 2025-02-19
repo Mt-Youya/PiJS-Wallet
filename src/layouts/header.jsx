@@ -129,6 +129,7 @@ function Header() {
         setLoading(false)
         Session.clear()
         Local.clear()
+        setIsConnected(false)
     }
 
     function ellipsisMiddle(string, long = 4) {
