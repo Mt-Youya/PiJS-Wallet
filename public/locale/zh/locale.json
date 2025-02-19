@@ -25,5 +25,13 @@
   "Disconnect": "断开连接",
   "Approve 100 USDT to participate": "批准100USDT参与活动",
   "Pay 100 USDT to participate": "支付100USDT参与私活动",
-  "Payment completed": "支付完成"
+  "Payment completed": "支付完成",
+  "Binding invite code": "绑定推荐码",
+  "Confirm": "确认绑定",
+  "Referral List": "推荐榜单",
+  "Referral Rewards": "推荐奖励",
+  "My referral code": "我的推荐代码",
+  "Completed": "您已完成私募",
+  "Please connect your wallet": "请连接您的钱包",
+  "Share your invitation code and invite more people to participate, you will receive 15% of the coin income and 5% of the node rebate rewards!": "分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！"
 }

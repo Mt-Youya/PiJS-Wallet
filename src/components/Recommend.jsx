@@ -4,9 +4,11 @@ import { bindReferrer } from "@/apis/auth.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { accountStore } from "@/stores/accounts.js"
 import SplitInputCode from "@/components/SplitInputCode.jsx"
+import { useTranslation } from "react-i18next"
 
 function Recommend({ trigger }) {
     const { setIsBindingRecommend } = accountStore()
+    const { t } = useTranslation()
     const [loading, setLoading] = useState(false)
 
 
@@ -27,7 +29,7 @@ function Recommend({ trigger }) {
         <>
             <Dialog>
                 <DialogContent className="border-solid-grey p-4 py-12 pb-8 w-5/6 bg-[#0A0A0A]" onClick={e => e.stopPropagation()}>
-                    <DialogTitle className="text-white">绑定推荐码 <DialogDescription /></DialogTitle>
+                    <DialogTitle className="text-white">{t("绑定推荐码")} <DialogDescription /></DialogTitle>
                     <SplitInputCode onChange={e => setInviteCode(e)} />
                     <DialogFooter>
                         <Dialog>
@@ -35,7 +37,7 @@ function Recommend({ trigger }) {
                                 className="w-full h-12 bg-primary text-center rounded-lg"
                                 onClick={handleBindingRecommend} disabled={loading}
                             >
-                                确认绑定
+                                {t("确认绑定")}
                             </DialogTrigger>
                         </Dialog>
                     </DialogFooter>

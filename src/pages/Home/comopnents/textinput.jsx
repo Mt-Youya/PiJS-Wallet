@@ -106,7 +106,7 @@ function TextInput() {
                             }
                             {isPaid && (
                                 <div className="mt-4">
-                                    <p>支付完成，您已完成私募</p>
+                                    <p>{t("支付完成")}。{t("您已完成私募")}</p>
                                     <br />
                                     <DialogClose
                                         className="w-30 h-12 bg-primary rounded-md text-black"> 知道了 </DialogClose>
@@ -117,7 +117,7 @@ function TextInput() {
                     </Dialog>
                     : (
                         <Button className="bg-[#5D6167] p-3 rounded-xl w-[calc(100%-2rem)] m-auto block" disabled>
-                            您已完成私募
+                            {t("您已完成私募")}
                         </Button>
                     )
             }

@@ -37,6 +37,8 @@ function Rights() {
         recomentList().then(({ data }) => setDataSource(data))
     }, [])
 
+    const inviteLink = useMemo(() => `https://abc.abc.com/inviteCode=?${inviteCode}`, [inviteCode])
+
     return (
         <>
             <div className="flex my-5">
@@ -55,8 +57,8 @@ function Rights() {
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">
-                            <span>推荐奖励</span>
-                            <span className="flex gap-2">我的推荐代码<Copy code={inviteCode} /> </span>
+                            <span>{t("推荐奖励")}</span>
+                            <span className="flex gap-2">{t("我的推荐代码")}<Copy code={inviteCode} /> </span>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-0 mt-4">
@@ -65,7 +67,7 @@ function Rights() {
                                 <Dialog>
                                     <DialogContent className="border-[#685319] w-11/12 rounded-lg">
                                         <DialogTitle className="text-white text-center">
-                                            推荐榜单 <DialogDescription />
+                                            {t("推荐榜单")} <DialogDescription />
                                         </DialogTitle>
                                         <TablePage columns={columns} dataSource={dataSource} pagination={pagination} />
                                     </DialogContent>
@@ -82,22 +84,21 @@ function Rights() {
                         <div className="flex justify-between">
                             <a className="text-white">
                                 Referral Link：<br />
-                                https://abc.abc.com/inviteCode=?{inviteCode}
+                                {inviteLink}
                             </a>
-                            <span><Copy code={`https://abc.abc.com/inviteCode=?${inviteCode}`} /></span>
+                            <span><Copy code={inviteLink} /></span>
                         </div>
                         <br />
-                        <p>分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！</p>
+                        <p>{t("分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！")}</p>
                     </CardContent>
                 </Card>
             ) : (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
-                        <CardTitle className="text-sm">请连接您的钱包</CardTitle>
+                        <CardTitle className="text-sm">{t("请连接您的钱包")}</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0 mt-4">
-                        <p className="text-xs leading-4">分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5%
-                            的节点返佣奖励！</p>
+                        <p className="text-xs leading-4">{t("分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！")}</p>
                     </CardContent>
                 </Card>
             )}
