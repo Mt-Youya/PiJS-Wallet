@@ -12,7 +12,7 @@ import TablePage from "@/components/TablePage.jsx"
 
 function Rights() {
     const { isConnected } = accountStore()
-    const { userinfo } = userinfoStore()
+    const { userinfo, setUserinfo } = userinfoStore()
     const { incomeInfo, setIncomeInfo } = incomeInfoStore()
     const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo?.inviteCode])
 
@@ -52,7 +52,12 @@ function Rights() {
         handlePageChange({ pageNum: pagination.current, pageSize: pagination.pageSize })
     }, [])
 
-    const inviteLink = useMemo(() => `https://abc.abc.com/inviteCode=?${inviteCode}`, [inviteCode])
+    const inviteLink = useMemo(() => `${location.origin}/?inviteCode=${inviteCode}`, [inviteCode])
+
+    useEffect(() => {
+        const url = new URLSearchParams(location.search)
+        setUserinfo({ ...userinfo, inviteCode: url.get("inviteCode") })
+    }, [])
 
     return (
         <>
@@ -68,7 +73,7 @@ function Rights() {
                 <li>{t("优先访问：未来生态系统项目")}</li>
                 <li>{t("LP质押提现：取消上述权利")}</li>
             </ul>
-            {isConnected ? (
+            {!isConnected ? (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">

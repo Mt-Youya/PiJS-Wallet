@@ -10,7 +10,7 @@ function SplitNumberSquare({ number = 0, size = "large" }) {
                     className={clsx(`text-center p-1 bg-[#1F2328] border-solid-grey`, size === "small" ? "w-8 h-8" : "w-12 h-12")}
                     key={index}
                 >
-                    {num}
+                    {num.toUpperCase()}
                 </li>
             ))}
         </ul>
