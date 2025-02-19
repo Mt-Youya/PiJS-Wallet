@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
-import { BrowserProvider, JsonRpcSigner } from "ethers"
+import { BrowserProvider, formatEther, JsonRpcSigner } from "ethers"
 import { useAppKitAccount, useAppKitProvider, useDisconnect } from "@reown/appkit/react"
 import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
 import { langStore } from "@/stores/lang.js"
@@ -14,6 +14,7 @@ import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
 import { Toaster } from "@/ui/toaster.jsx"
 import Recommend from "@/components/Recommend.jsx"
+import { accountStore } from "@/stores/accounts.js"
 
 function Header() {
     const { i18n, t } = useTranslation()
@@ -21,6 +22,7 @@ function Header() {
     const { setUserinfo } = userinfoStore()
     const { setContractInfo } = contractInfoStore()
     const { setIncomeInfo } = incomeInfoStore()
+    const { setIsConnected } = accountStore()
     const [expanded, setExpanded] = useState(false)
 
     const [switchLanguage, setSwitchLanguage] = useState(false)
@@ -42,19 +44,23 @@ function Header() {
     })
 
     async function createContract() {
-        const { address } = parsedCaiAddress
-        const provider = new BrowserProvider(walletProvider)
+        const { address, chainId } = parsedCaiAddress
+        const provider = new BrowserProvider(walletProvider, +chainId)
         const signer = new JsonRpcSigner(provider, address)
         const message = "Hello PiJS"
         const signature = await signer?.signMessage(message)
         // const USDTContract = new Contract(USDTAddress, USDTAbi, signer)
         // const USDTBalance = await USDTContract?.balanceOf?.(address)
-
+        const balance = await provider.getBalance(address)
+        const eth = formatEther(balance)
         return {
             address,
             signer,
             signature,
             message,
+            provider,
+            chainId,
+            eth,
             // contract: USDTContract,
             // balance: USDTBalance && formatUnits(USDTBalance, 18),
         }
@@ -64,7 +70,7 @@ function Header() {
         if (!isSuccess || !walletProvider || !parsedCaiAddress) return
 
         async function createSignature() {
-            const contract = createContract()
+            const contract = await createContract()
             setContractInfo(contract)
             const params = {
                 walletAddress: contract?.address,
@@ -76,6 +82,7 @@ function Header() {
             if (data?.token) {
                 Session.set("token", data.token)
                 Local.set("token", data.token)
+                setIsConnected(true)
             }
             getUserinfo()
             recomentIncome().then(({ data }) => setIncomeInfo(data?.totalIncome || 0))
@@ -87,7 +94,6 @@ function Header() {
     async function getUserinfo() {
         const { data } = await userInfo()
         setUserinfo(data)
-        Session.set("userInfo", data)
     }
 
     const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]

@@ -1,10 +1,10 @@
 import { createAppKit } from "@reown/appkit/react"
 import { EthersAdapter } from "@reown/appkit-adapter-ethers"
-import { arbitrum, mainnet } from "@reown/appkit/networks"
+import { arbitrum, mainnet, bscTestnet } from "@reown/appkit/networks"
 
 const projectId = "15d2a2219f777138df5d0a550ef01ed7"
 
-const networks = [arbitrum, mainnet]
+const networks = [bscTestnet]
 
 const metadata = {
     name: "PiJS-Wallet",

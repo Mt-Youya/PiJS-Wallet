@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { userinfoStore } from "@/stores/userinfo.js"
 import ProductCard from "@/components/ProductCard.jsx"
 import Header from "@/layouts/header.jsx"
 import Bar from "./comopnents/bar.jsx"
@@ -10,16 +11,17 @@ import Exchange from "@/components/Exchange.jsx"
 
 function Home() {
     const { t } = useTranslation()
+    const { userinfo } = userinfoStore()
     return (
         <>
             <Header />
             <Bar />
             <ProductCard
-                title={t("我的JS")} dollar={"1,000,000"} description={t("PIJSwap账号绑定")}
+                title={t("我的JS")} dollar={userinfo?.points} description={t("PIJSwap账号绑定")}
                 modalContent={<Binding />}
             />
             <ProductCard
-                title={t("我的PIJS")} dollar={"1,000,000"} modalContent={<Exchange />}
+                title={t("我的PIJS")} dollar={userinfo?.pijsPoints} modalContent={<Exchange />}
                 description={<span>{t("绑定PIJSwap账号")}<br />{t("使用账号内JS兑换PIJS")}</span>}
                 footer={(
                     <div className="text-right pt-2">

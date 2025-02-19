@@ -6,16 +6,17 @@ import { accountStore } from "@/stores/accounts.js"
 import { userinfoStore } from "@/stores/userinfo.js"
 import SplitNumberSquare from "@/components/SplitNumberSquare.jsx"
 import Copy from "@/components/Copy.jsx"
+import { incomeInfoStore } from "@/stores/income.js"
 
 function Rights() {
-    const { isBindingRecommend } = accountStore()
+    const { isConnected } = accountStore()
     const { userinfo } = userinfoStore()
-    const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo])
+    const { incomeInfo, setIncomeInfo } = incomeInfoStore()
+    const inviteCode = useMemo(() => userinfo?.inviteCode, [userinfo?.inviteCode])
 
-    const [income, setIncome] = useState(0)
     useEffect(() => {
-        recomentIncome().then(({ data }) => setIncome(data?.totalIncome || 0))
-    }, [])
+        userinfo && recomentIncome().then(({ data }) => setIncomeInfo(data?.totalIncome || 0))
+    }, [userinfo])
 
     return (
         <>
@@ -31,7 +32,7 @@ function Rights() {
                 <li>{t("优先访问：未来生态系统项目")}</li>
                 <li>{t("LP质押提现：取消上述权利")}</li>
             </ul>
-            {isBindingRecommend ? (
+            {isConnected ? (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
                     <CardHeader className="p-0 ">
                         <CardTitle className="text-sm flex justify-between">
@@ -42,7 +43,7 @@ function Rights() {
                     <CardContent className="p-0 mt-4">
                         <div className="flex justify-between">
                             <span className="flex gap-1 justify-center items-center">
-                                <b className="font-bold text-xl"> {income}</b> USDT
+                                <b className="font-bold text-xl"> {incomeInfo}</b> USDT
                                 <img src="/assets/DirectionRight.svg" alt="DirectionRight" />
                             </span>
                             <SplitNumberSquare number={inviteCode} size="small" />
