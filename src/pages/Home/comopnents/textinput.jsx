@@ -32,7 +32,7 @@ function TextInput() {
         const { data: payInfo } = await paymentInfo()
 
         if (payInfo) {
-            const txHash = await SendTx(payInfo)
+            const { hash: txHash } = await SendTx(payInfo)
             const { data: { message, success } = {} } = await submitPayment({
                 ...payInfo,
                 address: userinfo?.wallet,
