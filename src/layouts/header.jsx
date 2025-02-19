@@ -142,13 +142,13 @@ function Header() {
                                     <img src="/assets/Dropdown.svg" alt="Dropdown" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
-                                    className="bg-[#191E22] rounded-xl px-4 py-5 w-42 text-white border-none">
+                                    className="bg-[#191E22] rounded-xl px-4 py-5 text-white border-none">
                                     <DropdownMenuItem>
                                         <Recommend trigger={(
                                             <>
                                                 <img className="w-6 h-4.5" src="/assets/Binding.svg"
                                                      alt="Binding" />
-                                                <span>绑定推荐码</span>
+                                                <span>{t("绑定推荐码")}</span>
                                             </>
                                         )} />
                                     </DropdownMenuItem>
