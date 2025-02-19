@@ -36,7 +36,7 @@ function SplitInputCode({ onChange, length = 6 }) {
     }
 
     useEffect(() => {
-        onChange?.(code.join())
+        onChange?.(code.join(""))
     }, [code])
 
     const iptsRef = useRef([])
