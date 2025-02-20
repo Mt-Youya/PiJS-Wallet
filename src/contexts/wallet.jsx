@@ -19,6 +19,11 @@ export const AppKit = createAppKit({
     metadata,
     projectId,
     features: {
-        analytics: true,
+        connectMethodsOrder: ['wallet'],
     },
+    featuredWalletIds: [
+        'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+        '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
+        '20459438007b75f4f4acb98bf29aa3b800550309646d375da5fd4aac6c2a2c66'
+    ]
 })

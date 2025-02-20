@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import { BrowserProvider, formatEther, JsonRpcSigner } from "ethers"
 import { useAppKitAccount, useAppKitProvider, useDisconnect } from "@reown/appkit/react"
 import { useAppKitWallet } from "@reown/appkit-wallet-button/react"
+import { useAppKit } from "@reown/appkit/react"
 import { langStore } from "@/stores/lang.js"
 import { userinfoStore } from "@/stores/userinfo.js"
 import { contractInfoStore } from "@/stores/contract.js"
@@ -15,6 +16,7 @@ import { Local, Session } from "@/utils/storage.js"
 import { Button } from "@/ui/button.jsx"
 import { Toaster } from "@/ui/toaster.jsx"
 import Recommend from "@/components/Recommend.jsx"
+import { useToast } from "@/hooks/useToast.js"
 
 function Header() {
     const { i18n, t } = useTranslation()
@@ -42,82 +44,72 @@ function Header() {
     const { connect, isSuccess } = useAppKitWallet({
         onSuccess: parse => setParsedCaiAddress(parse),
     })
+    const { open, close } = useAppKit()
+
 
     const addressDiff = useRef(address)
     useEffect(() => {
         (async function() {
-            if (address === "" || address === void 0) return
-            if (address !== addressDiff.current) {
-                await getUserinfo()
-                // location.reload()
+            // 地址为空时
+            if (!address) {
+                if (addressDiff.current) {
+                    // 之前有地址，现在断开了
+                    setIsConnected(false)
+                    Session.clear()
+                    Local.clear()
+                }
+                addressDiff.current = address
+                return
             }
+
+            // 地址从空变为有值时
+            if (!addressDiff.current) {
+                await connectToGetToken(address)
+                await getUserinfo()
+                setContractInfo({ "address": address })
+            }
+
             addressDiff.current = address
         })()
-
     }, [address])
 
-    async function createContract() {
-        const { address, chainId } = parsedCaiAddress
-        const provider = new BrowserProvider(walletProvider, +chainId)
-        const signer = new JsonRpcSigner(provider, address)
-        const message = "Hello PiJS"
-        const signature = await signer?.signMessage(message)
-        // const USDTContract = new Contract(USDTAddress, USDTAbi, signer)
-        // const USDTBalance = await USDTContract?.balanceOf?.(address)
-        const balance = await provider.getBalance(address)
-        const eth = formatEther(balance)
-        return {
-            address,
-            signer,
-            signature,
-            message,
-            provider,
-            chainId,
-            eth,
-            // contract: USDTContract,
-            // balance: USDTBalance && formatUnits(USDTBalance, 18),
+
+    async function connectToGetToken(walletAddress) {
+        const params = {
+            "walletAddress": walletAddress,
+        }
+        const { data } = await connectWallet(params)
+        if (data?.token) {
+            Session.set("token", data.token)
+            Local.set("token", data.token)
+            setIsConnected(true)
         }
     }
 
     useEffect(() => {
-        if (!isSuccess || !walletProvider || !parsedCaiAddress) return
-
-        async function createSignature() {
-            const contract = await createContract()
-            setContractInfo(contract)
-            const params = {
-                walletAddress: contract?.address,
-                signature: contract?.signature,
-                timestamp: +new Date,
-                message: contract?.message,
+        (async function() {
+            if (!userinfo) return
+            setIsConnected(true)
+            if (code && !userinfo?.hasReferrer) {
+                await getUserBinding()
             }
-            const { data } = await connectWallet(params)
-            if (data?.token) {
-                Session.set("token", data.token)
-                Local.set("token", data.token)
-                setIsConnected(true)
-            }
-            getUserinfo()
-            recomentIncome().then(({ data }) => setIncomeInfo(data?.totalIncome || 0))
-        }
-
-        createSignature()
-    }, [isSuccess, walletProvider, parsedCaiAddress])
-
-    useEffect(() => {
-        userinfo && setIsConnected(true)
+        })()
     }, [userinfo])
 
     async function getUserinfo() {
         const { data } = await userInfo()
+        // 先更新状态
         data && setUserinfo(data)
+        setIsBindingRecommend(data?.hasReferrer)
+        recomentIncome().then(({ data }) => setIncomeInfo(data?.totalIncome || 0))
     }
+
 
     const wallets = ["metamask", "trust", "coinbase", "rainbow", "jupiter", "solflare", "coin98", "magic-eden", "backpack", "frontier", "phantom"]
 
-    async function loopConnect(wallet = "metamask") {
+    async function loopConnect() {
         try {
-            await connect(wallet)
+            await open()
             return true
         } catch (e) {
             return false
@@ -127,20 +119,20 @@ function Header() {
     async function handleConnect() {
         if (isConnected) return
         setLoading(true)
-        for (const wallet of wallets) {
-            const result = await loopConnect(wallet)
-            if (result) break
-        }
-        setLoading(false)
-        console.log("code", code)
-        code && getUserBinding()
+
+        // 尝试连接钱包
+
+        const result = await loopConnect()
+        if (result)
+
+            setLoading(false)
     }
 
     async function handleExit() {
         if (!isConnected) return
         setLoading(true)
         await disconnect()
-        toast.success("连接已断开!")
+        toast.success(t("连接已断开!"))
         setLoading(false)
         Session.clear()
         Local.clear()
@@ -155,19 +147,19 @@ function Header() {
     const code = url.get("inviteCode")
 
     async function getUserBinding(args) {
-        console.log("wallet changed", args)
         if (!userinfo) return console.log("!userinfo getUserBinding", userinfo)
-        const { success, data: { message } } = await bindReferrer(code)
+        if (!code) return console.log("no inviteCode,not binding")
+
+        if (userinfo?.hasReferrer) {
+            return console.log("already bound referrer")
+        }
+
+        const { data: { success, message } } = await bindReferrer(code)
         if (success) {
-            setIsBindingRecommend(true)
             await getUserinfo()
         }
-        toast[success ? "success" : "error"](message)
+        useToast(message, success)
     }
-
-    useEffect(() => {
-        window.ethereum?.on?.("accountsChanged", getUserBinding)
-    }, [])
 
     return (
         <>

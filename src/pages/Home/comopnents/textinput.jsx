@@ -5,7 +5,6 @@ import { toast } from "sonner"
 import { BrowserProvider, Contract } from "ethers"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/ui/dialog.jsx"
 import { Button } from "@/ui/button.jsx"
-import { Textarea } from "@/ui/textarea.jsx"
 import { fundConfig, paymentInfo, paymentStatus, submitPayment } from "@/apis/auth.js"
 import { cellFolderStore } from "@/stores/cellFolder.js"
 import { contractInfoStore } from "@/stores/contract.js"
@@ -27,15 +26,13 @@ function TextInput() {
     async function handlePay() {
         if (!userinfo) {
             setUserinfo(Session.get("userInfo"))
-            // setOpen(false)
-            return toast.warning("请先连接钱包!")
+            return toast.warning(t("请先连接钱包!"))
         }
         setLoading(true)
         const { data: payInfo } = await paymentInfo()
 
         if (!payInfo) {
-            // setOpen(false)
-            return toast.error("支付信息查询失败！")
+            return toast.error(t("支付信息查询失败！"))
         }
         const { hash: txHash } = await SendTx(payInfo)
         const { data: { message, success } = {} } = await submitPayment({
@@ -44,12 +41,12 @@ function TextInput() {
             txHash,
         })
         setApproval(success)
-        if (!success) return toast.error(message)
-        toast.success(message)
+        if (!success) return toast.error(t(message))
+        toast.success(t(message))
         const timer = setInterval(async () => {
             const { data } = await paymentStatus()
             if (data?.completed) {
-                toast.success("支付成功!")
+                toast.success(t("支付成功!"))
                 clearInterval(timer)
                 setLoading(false)
                 setUserinfo({ ...userinfo, isPaid: true })
@@ -59,7 +56,7 @@ function TextInput() {
     }
 
     async function SendTx(payInfo) {
-        const usdtContractAddress = "0xa409A8e7dC971f0a2c8f311330276599E1227E8A"
+        const usdtContractAddress = payInfo?.usdtContractAddress
         const { contractAddress } = payInfo
 
         const { address } = contractInfo ?? {}
@@ -76,13 +73,13 @@ function TextInput() {
         const balance = await usdtContract.balanceOf(address)
         if (balance < paymentAmount) {
             setOpen(false)
-            return toast.error("USDT余额不足，请先充值")
+            return toast.error(t("USDT余额不足，请先充值"))
         }
 
         const allowance = await usdtContract.allowance(address, contractAddress)
         if (allowance < paymentAmount) {
             setOpen(false)
-            return toast.error("授权额度不足，请先授权")
+            return toast.error(t("授权额度不足，请先授权"))
         }
 
         const paymentParams = [{ ...payInfo, amount: paymentAmount }]
@@ -95,8 +92,7 @@ function TextInput() {
         <>
             <h2 className="text-white text-xl my-4 block">{t("PIJSwap 全球节点合伙人")}</h2>
             <div className="p-4 my-4 border-solid-grey">
-                <Textarea
-                    className="border data-[hover]:shadow data-[focus]:bg-blue-100 block w-full h-32 bg-[#2A2A2A] rounded-lg" />
+                <img className="rounded-lg"  src="/assets/PluginDraw.png" alt="PluginDraw"/>
             </div>
             {!isPaid ?
                 <Dialog as="div" className="relative z-10 focus:outline-none">
@@ -104,7 +100,7 @@ function TextInput() {
                         className="bg-primary p-3 rounded-xl w-[calc(100%-2rem)] m-auto block"
                         onClick={handlePay}
                     >
-                        {t("支付100USDT参与活动")}
+                        {t("支付100USDT认购")}
                     </DialogTrigger>
                     <DialogContent
                         className="max-w-md text-center text-white border-none w-7/12 rounded-xl bg-white/5 p-6 backdrop-blur-2xl justify-center items-center"
@@ -112,12 +108,12 @@ function TextInput() {
                         {loading && (
                             <>
                                 {!approval && <Loader className="animate-spin scale-150 text-center block mx-auto my-4" />}
-                                <span>{t(`${!approval ? "批准" : "支付"}100USDT参与活动`)}</span>
+                                <span>{t(`${!approval ? "批准" : "支付"}100USDT认购`)}</span>
                             </>
                         )}
                         {isPaid && (
                             <div className="mt-4">
-                                <p>{t("支付完成")}。{t("您已完成私募")}</p>
+                                <p>{t("支付完成")}。{t("您已完成认购")}</p>
                                 <br />
                                 <DialogClose className="w-30 h-12 bg-primary rounded-md text-black"> 知道了 </DialogClose>
                             </div>
@@ -127,7 +123,7 @@ function TextInput() {
                 </Dialog>
                 :
                 <Button className="bg-[#5D6167] p-3 rounded-xl w-[calc(100%-2rem)] m-auto block" disabled>
-                    {t("您已完成私募")}
+                    {t("您已完成认购")}
                 </Button>
             }
         </>

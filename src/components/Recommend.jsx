@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { clsx } from "clsx"
 import { Loader } from "lucide-react"
@@ -19,35 +19,21 @@ function Recommend({ trigger }) {
 
     const [inviteCode, setInviteCode] = useState("")
 
-    async function handleBindingRecommend(e) {
-        if (code) {
-            toast.warning("您已经绑定上级!")
-            return e.preventDefault()
-        }
-        handleBinding(inviteCode)
-    }
-
     async function handleBinding(paramsCode) {
         if (!userinfo) return console.log("!userinfo handleBinding")
         setLoading(true)
-        const { success, data: { message } } = await bindReferrer(paramsCode)
+        const { data: { success, message } } = await bindReferrer(paramsCode)
         if (success) {
-            setIsBindingRecommend(true)
             const { data: info } = await userInfo()
             setUserinfo(info)
-            setInviteCode("")
+            setIsBindingRecommend(info?.hasReferrer)
+
         }
-        toast[success ? "success" : "error"](message)
+        toast[success ? "success" : "error"](t(message))
         setLoading(false)
     }
 
-    useEffect(() => {
-        if (!code) return
-        setInviteCode(code)
-        handleBinding(code)
-    }, [])
-
-    const hasInviteCode = useMemo(() => !!(!userinfo?.hasReferrer || inviteCode), [inviteCode, userinfo?.hasReferrer])
+    const canBind = useMemo(() => !userinfo?.hasReferrer, [userinfo?.hasReferrer])
 
     return (
         <Dialog modal>
@@ -58,7 +44,8 @@ function Recommend({ trigger }) {
                     <Dialog modal>
                         <DialogTrigger
                             className="w-full h-12 bg-primary text-center rounded-lg flex justify-center gap-2 items-center"
-                            onClick={handleBindingRecommend} disabled={loading}
+                            onClick={() => handleBinding(inviteCode)}
+                            disabled={loading}
                         >
                             {loading && <Loader className="animate-spin" />} {t("确认绑定")}
                         </DialogTrigger>
@@ -66,9 +53,9 @@ function Recommend({ trigger }) {
                 </DialogFooter>
             </DialogContent>
             <DialogTrigger
-                className={clsx("flex gap-2", hasInviteCode && "text-gray-500")}
-                onClick={e => e.stopPropagation() && (hasInviteCode && e.preventDefault())}
-                disabled={hasInviteCode}
+                className={clsx("flex gap-2", !canBind && "text-gray-500")}
+                onClick={e => e.stopPropagation()}
+                disabled={!canBind}
             >
                 {trigger}
             </DialogTrigger>

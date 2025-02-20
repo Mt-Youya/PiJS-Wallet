@@ -17,18 +17,17 @@ function Home() {
             <Header />
             <Bar />
             <ProductCard
-                title={t("我的JS")} dollar={userinfo?.points} description={t("PIJSwap账号绑定")}
+                title={t("我的JS")} dollar={userinfo?.points} description={t("APP账号绑定")}
                 modalContent={<Binding />}
             />
             <ProductCard
                 title={t("我的PIJS")} dollar={userinfo?.pijsPoints}
-                description={<span>{t("绑定PIJSwap账号")}<br />{t("使用账号内JS兑换PIJS")}</span>}
+                description={<span>{t("绑定APP账号")}<br />{t("使用账号内JS兑换PiJS")}</span>}
                 modalContent={<Exchange />}
                 footer={(
                     <div className="text-right pt-2">
                         <p className="h-px w-[calc(100%+24px)] -ml-3 bg-[#2A2C30] mb-1" />
-                        <span className="text-[#5D6167]">{t("兑换截止时间")}</span> &nbsp;
-                        <span>2025-3-1 23:59:59</span>
+                        <span className="text-white">{t("成功认购节点合伙人之后即可开启JS兑换PIJS")}</span> &nbsp;
                     </div>
                 )}
             />
@@ -36,7 +35,7 @@ function Home() {
             <Cell />
             <Rights />
             <div className="w-[calc(100%+2rem)] -ml-4">
-                <img className="w-full block" src="/assets/Publicity.png" alt="publicity" />
+                <img className="w-full block" src="/assets/Banner.png" alt="Banner" />
             </div>
 
         </>

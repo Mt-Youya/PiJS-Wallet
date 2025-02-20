@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { t } from "i18next"
+import { useTranslation } from "react-i18next"
 import { recomentIncome, rewardRank } from "@/apis/auth.js"
 import { accountStore } from "@/stores/accounts.js"
 import { userinfoStore } from "@/stores/userinfo.js"
@@ -11,6 +11,7 @@ import Copy from "@/components/Copy.jsx"
 import TablePage from "@/components/TablePage.jsx"
 
 function Rights() {
+    const { t } = useTranslation()
     const { isConnected } = accountStore()
     const { userinfo } = userinfoStore()
     const { incomeInfo, setIncomeInfo } = incomeInfoStore()
@@ -57,15 +58,17 @@ function Rights() {
         <>
             <div className="flex my-5">
                 <img src="/assets/Crown.svg" alt="crown" /> &nbsp;
-                <span className="text-[#F4C134]">{t("PIJS 权益卡说明")}：</span>
+                <span className="text-[#F4C134]">{t("生态多重权益体系：")}：</span>
             </div>
 
             <ul className="text-[#ABB1B9] list-disc pl-5 *:my-2 mb-10">
-                <li>{t("白名单：提前5分钟购买代币")}</li>
-                <li>{t("首次挖矿奖励：1-3天")}</li>
-                <li>{t("1％交易费：分布式")}</li>
-                <li>{t("优先访问：未来生态系统项目")}</li>
-                <li>{t("LP质押提现：取消上述权利")}</li>
+                <li>{t("享受1%交易手续费永久分红")};</li>
+                <li>{t("凡Pi主网KYC未通过者可获得PIJS补偿质押挖矿")};</li>
+                <li>{t("最优兑换比例JS兑换PIJS")};</li>
+                <li>{t("独享PIJS头矿权益")};</li>
+                <li>{t("优先购买PIJS白名单")};</li>
+                <li>{t("获得未来生态产品优先权")};</li>
+                <li>{t("参与PIJSwap生态DAO治理，享有最高投票权")}。</li>
             </ul>
             {isConnected ? (
                 <Card className="text-[#ABB1B9] border-solid-grey px-3.5 py-4.5 mb-2">
@@ -96,7 +99,7 @@ function Rights() {
                             </span>
                             <SplitNumberSquare code={userinfo?.inviteCode} size="small" />
                         </div>
-                        <p>Invitation to 50 NFTs</p>
+                        <p>{t("邀请用户数")} 500</p>
                         <br />
                         <div className="flex justify-between">
                             <a className="text-white">

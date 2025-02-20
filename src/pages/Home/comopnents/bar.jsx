@@ -6,7 +6,7 @@ function Bar() {
     return (
         <div
             className={clsx("bg-[#f6b74c1a] w-[calc(100%+32px)] my-4 -ml-4 flex gap-2 py-3 px-4 text-xs")}>
-            <div className="w-6 h-6">
+            <div className="w-4 h-4">
                 <img src="/assets/Info.svg" alt="info" />
             </div>
             <p className="text-[#ABB1B9]">
